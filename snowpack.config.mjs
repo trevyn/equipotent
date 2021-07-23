@@ -5,6 +5,12 @@ export default {
   },
   plugins: [
     '@snowpack/plugin-svelte',
+    [
+      'snowpack-plugin-wasm-pack',
+      {
+        projectPath: './mywasm',
+      },
+    ],
   ],
   routes: [
     /* Enable an SPA Fallback in development: */

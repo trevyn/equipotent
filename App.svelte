@@ -1,6 +1,15 @@
 <!-- App.svelte -->
 <script>
   /* component logic will go here */
+  import init, { add } from 'mywasm';
+
+const maths = async () => {
+  await init();
+
+  console.log('Addition in rust:', add(1, 2));
+};
+
+maths();
 </script>
 <style>
   /* css will go here */
