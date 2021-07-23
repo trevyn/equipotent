@@ -1,23 +1,34 @@
-<!-- App.svelte -->
 <script>
-  /* component logic will go here */
-  import init, { add } from 'mywasm';
+ import init, { add } from "mywasm";
 
-const maths = async () => {
+ const maths = async () => {
   await init();
+  // throw new Error("foo");
+  return add(10, 2);
+ };
 
-  console.log('Addition in rust:', add(1, 2));
-};
-
-maths();
+ let promise = maths();
 </script>
-<style>
-  /* css will go here */
-</style>
+
 <div class="App">
-  <header class="App-header">
-    <a class="App-link" href="https://svelte.dev" target="_blank" rel="noopener noreferrer">
-      Learn Svelte
-    </a>
-  </header>
+ <header class="App-header">
+  {#await promise}
+   <p>...waiting</p>
+  {:then number}
+   <p>The number is cool {number}</p>
+  {:catch error}
+   <p style="color: red">Error: {error.message}</p>
+  {/await}
+  <a
+   class="App-link"
+   href="https://svelte.dev"
+   target="_blank"
+   rel="noopener noreferrer"
+  >
+   Learn Svelte
+  </a>
+ </header>
 </div>
+
+<style>
+</style>
