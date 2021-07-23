@@ -5,11 +5,14 @@
     "test": "echo \"This template does not include a test runner by default.\" && exit 1"
   },
   "devDependencies": {
+    "@snowpack/plugin-postcss": "^1.4.3",
     "@snowpack/plugin-svelte": "^3.7.0",
-    "snowpack": "^3.3.7"
+    "postcss": "^8.3.6",
+    "snowpack": "^3.8.3",
+    "tailwindcss": "^2.2.7"
   },
   "dependencies": {
     "snowpack-plugin-wasm-pack": "^1.1.0",
-    "svelte": "^3.39.0"
+    "svelte": "^3.40.1"
   }
 }

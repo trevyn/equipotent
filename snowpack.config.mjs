@@ -5,6 +5,7 @@ export default {
   },
   plugins: [
     '@snowpack/plugin-svelte',
+    '@snowpack/plugin-postcss',
     [
       'snowpack-plugin-wasm-pack',
       {
@@ -24,7 +25,7 @@ export default {
     /* ... */
   },
   devOptions: {
-    /* ... */
+    tailwindConfig: './tailwind.config.js',
   },
   buildOptions: {
     /* ... */
