@@ -15,7 +15,7 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn add(a: i32, b: i32) -> i32 {
- a + b + b + 1 + 2 + 3
+ a + b
 }
 
 #[wasm_bindgen]

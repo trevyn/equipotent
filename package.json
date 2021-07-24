@@ -1,18 +1,18 @@
 {
-  "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build",
-    "test": "echo \"This template does not include a test runner by default.\" && exit 1"
-  },
-  "devDependencies": {
-    "@snowpack/plugin-postcss": "^1.4.3",
-    "@snowpack/plugin-svelte": "^3.7.0",
-    "postcss": "^8.3.6",
-    "snowpack": "^3.8.3",
-    "tailwindcss": "^2.2.7"
-  },
-  "dependencies": {
-    "snowpack-plugin-wasm-pack": "^1.1.0",
-    "svelte": "^3.40.1"
-  }
+ "scripts": {
+  "start": "snowpack dev",
+  "build": "snowpack build",
+  "reinstall-deps": "rm -rf node_modules && rm -rf package-lock.json && npm install"
+ },
+ "devDependencies": {
+  "@snowpack/plugin-postcss": "^1.4.3",
+  "@snowpack/plugin-svelte": "^3.7.0",
+  "postcss": "^8.3.6",
+  "snowpack": "^3.8.3",
+  "snowpack-plugin-wasm-pack": "^1.1.0",
+  "tailwindcss": "^2.2.7"
+ },
+ "dependencies": {
+  "svelte": "^3.40.1"
+ }
 }
