@@ -3,13 +3,16 @@ mod utils;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
+#[derive(Default)]
 pub struct ExportedNamedStruct {
  pub inner: u32,
+ pub bigunsigned: u64,
+ pub bigsigned: i64,
 }
 
 #[wasm_bindgen]
 pub fn return_named_struct(inner: u32) -> ExportedNamedStruct {
- ExportedNamedStruct { inner }
+ ExportedNamedStruct { inner, ..Default::default() }
 }
 
 #[wasm_bindgen]

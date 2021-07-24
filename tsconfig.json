@@ -6,7 +6,7 @@
   "paths": {
    "mywasm": ["./mywasm/pkg"]
   },
-  "target": "es2019",
+  "target": "esnext",
   "types": ["svelte"],
   "moduleResolution": "node"
  }
