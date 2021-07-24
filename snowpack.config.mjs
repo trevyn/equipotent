@@ -4,6 +4,7 @@ export default {
     /* ... */
   },
   plugins: [
+    '@snowpack/plugin-typescript',
     '@snowpack/plugin-svelte',
     '@snowpack/plugin-postcss',
     [

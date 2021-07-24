@@ -1,0 +1,13 @@
+{
+ "include": ["."],
+ "exclude": ["node_modules/*"],
+ "compilerOptions": {
+  "baseUrl": "./",
+  "paths": {
+   "mywasm": ["./mywasm/pkg"]
+  },
+  "target": "es2019",
+  "types": ["svelte"],
+  "moduleResolution": "node"
+ }
+}

@@ -1,10 +1,11 @@
-<script>
- import init, { add } from "mywasm";
+<script lang="ts">
+ import init, * as mywasm from "mywasm";
 
  const maths = async () => {
   await init();
   // throw new Error("foo");
-  return add(10, 2);
+  console.log(mywasm.return_named_struct(42));
+  return mywasm.add(10, 2);
  };
 
  let promise = maths();
