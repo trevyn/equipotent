@@ -2,6 +2,7 @@
 members = [
   "common-rs",
   "fe-rs",
+  "be-rs",
 ]
 
 [profile.release]
