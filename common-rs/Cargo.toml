@@ -11,8 +11,3 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 turbosql = {version = "0.2", optional = true}
 wasm-bindgen = {version = "0.2.63", optional = true}
-
-[profile.release]
-codegen-units = 1 # Reduce number of codegen units to increase optimizations.
-lto = true # Enable Link Time Optimization
-opt-level = "s" # Optimize for size.

@@ -1,4 +1,8 @@
-// #[wasm_bindgen]
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::prelude::*;
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen]
 #[derive(Default)]
 pub struct ExportedNamedStruct {
  pub inner: u32,
