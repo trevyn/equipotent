@@ -10,7 +10,7 @@ export default {
     [
       'snowpack-plugin-wasm-pack',
       {
-        projectPath: './mywasm',
+        projectPath: '../fe-rs',
       },
     ],
   ],

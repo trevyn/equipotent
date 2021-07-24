@@ -1,5 +1,5 @@
 <script lang="ts">
- import init, * as mywasm from "mywasm";
+ import init, * as mywasm from "../fe-rs/pkg";
 
  const maths = async () => {
   await init();

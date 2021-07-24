@@ -1,11 +1,8 @@
 {
- "include": ["."],
+ "include": ["./../"],
  "exclude": ["node_modules/*"],
  "compilerOptions": {
   "baseUrl": "./",
-  "paths": {
-   "mywasm": ["./mywasm/pkg"]
-  },
   "target": "esnext",
   "types": ["svelte"],
   "moduleResolution": "node"
