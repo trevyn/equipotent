@@ -1,7 +1,7 @@
 [package]
 authors = ["trevyn <trevyn-git@protonmail.com>"]
 edition = "2018"
-name = "mywasm"
+name = "fe-rs"
 version = "0.1.0"
 
 [lib]
