@@ -14,7 +14,7 @@ extern "C" {
  fn log(s: &str);
 }
 
-use common_rs::ExportedNamedStruct;
+use common_rs::*;
 
 #[wasm_bindgen]
 pub fn return_named_struct(inner: u32) -> ExportedNamedStruct {

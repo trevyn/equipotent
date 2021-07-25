@@ -1,6 +1,7 @@
 use futures_util::StreamExt;
 // use tokio::io::AsyncWriteExt;
 // use log::info;
+use common_rs::*;
 use tokio::net::{TcpListener, TcpStream};
 
 #[tokio::main]
@@ -52,6 +53,13 @@ async fn accept_connection(stream: TcpStream) {
   // tokio::io::stdout().write(&data).await.unwrap();
  });
 
+ let namedstruct =
+  ExportedNamedStruct { inner: Some(99), bigsigned: Some(12), ..Default::default() };
+ let serialized = bincode::serialize(&namedstruct).unwrap();
+ let deserialized: ExportedNamedStruct = bincode::deserialize(&serialized).unwrap();
+ println!("{:?}", namedstruct);
+ dbg!(serialized);
+ dbg!(deserialized);
  read_future.await;
 
  // read.forward(write).await.expect("Failed to forward message")
