@@ -5,6 +5,7 @@ name = "be-rs"
 version = "0.1.0"
 
 [dependencies]
+anyhow = "1"
 bincode = "1"
 common-rs = {path = "../common-rs", features = ["turbosql"]}
 env_logger = "0.9"
