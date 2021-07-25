@@ -18,7 +18,7 @@ use common_rs::ExportedNamedStruct;
 
 #[wasm_bindgen]
 pub fn return_named_struct(inner: u32) -> ExportedNamedStruct {
- ExportedNamedStruct { inner, ..Default::default() }
+ ExportedNamedStruct { inner: Some(inner), ..Default::default() }
 }
 
 #[wasm_bindgen]
@@ -42,7 +42,8 @@ pub fn start_websocket() -> Result<(), JsValue> {
  let ws = WebSocket::new("wss://echo.websocket.org")?;
  // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
- // create callback
+
+ // onmessage callback
  let cloned_ws = ws.clone();
  let onmessage_callback = Closure::wrap(Box::new(move |e: MessageEvent| {
   // Handle difference Text/Binary,...
@@ -67,7 +68,7 @@ pub fn start_websocket() -> Result<(), JsValue> {
    let onloadend_cb = Closure::wrap(Box::new(move |_e: web_sys::ProgressEvent| {
     let array = js_sys::Uint8Array::new(&fr_c.result().unwrap());
     let len = array.byte_length() as usize;
-    console_log!("Blob received {}bytes: {:?}", len, array.to_vec());
+    console_log!("Blob received {} bytes: {:?}", len, array.to_vec());
     // here you can for example use the received image/png data
    }) as Box<dyn FnMut(web_sys::ProgressEvent)>);
    fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));
@@ -84,12 +85,14 @@ pub fn start_websocket() -> Result<(), JsValue> {
  // forget the callback to keep it alive
  onmessage_callback.forget();
 
+ // onerror callback
  let onerror_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
   console_log!("error event: {:?}", e);
  }) as Box<dyn FnMut(ErrorEvent)>);
  ws.set_onerror(Some(onerror_callback.as_ref().unchecked_ref()));
  onerror_callback.forget();
 
+ // onopen callback
  let cloned_ws = ws.clone();
  let onopen_callback = Closure::wrap(Box::new(move |_| {
   console_log!("socket opened");
