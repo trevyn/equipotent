@@ -1,9 +1,11 @@
+use serde::{Deserialize, Serialize};
+
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
 #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen)]
 #[cfg_attr(feature = "turbosql", derive(turbosql::Turbosql))]
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Default, Debug)]
 pub struct ExportedNamedStruct {
  pub rowid: Option<i64>,
  pub inner: Option<u32>,

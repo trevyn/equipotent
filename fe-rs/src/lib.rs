@@ -18,7 +18,9 @@ use common_rs::ExportedNamedStruct;
 
 #[wasm_bindgen]
 pub fn return_named_struct(inner: u32) -> ExportedNamedStruct {
- ExportedNamedStruct { inner: Some(inner), ..Default::default() }
+ let mystruct = ExportedNamedStruct { inner: Some(inner), ..Default::default() };
+ console_log!("{:?}", mystruct);
+ mystruct
 }
 
 #[wasm_bindgen]

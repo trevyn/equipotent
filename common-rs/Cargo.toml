@@ -9,5 +9,6 @@ version = "0.1.0"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+serde = {version = "1", features = ["derive"]}
 turbosql = {version = "0.2", optional = true}
 wasm-bindgen = {version = "0.2", optional = true}
