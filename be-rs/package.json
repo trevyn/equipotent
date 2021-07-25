@@ -1,0 +1,5 @@
+{
+ "scripts": {
+  "start": "cargo watch -w .. -x run"
+ }
+}
