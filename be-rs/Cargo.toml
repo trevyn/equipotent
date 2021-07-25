@@ -5,4 +5,10 @@ name = "be-rs"
 version = "0.1.0"
 
 [dependencies]
+bincode = "1"
 common-rs = {path = "../common-rs", features = ["turbosql"]}
+env_logger = "0.9"
+futures-util = {version = "0.3", default-features = false, features = ["async-await", "sink", "std"]}
+log = "0.4"
+tokio = {version = "1", features = ["full"]}
+tokio-tungstenite = "0.15"

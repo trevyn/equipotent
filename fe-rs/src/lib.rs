@@ -41,7 +41,7 @@ pub fn greet() {
 #[wasm_bindgen(start)]
 pub fn start_websocket() -> Result<(), JsValue> {
  // Connect to an echo server
- let ws = WebSocket::new("wss://echo.websocket.org")?;
+ let ws = WebSocket::new("ws://127.0.0.1:8080")?;
  // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
