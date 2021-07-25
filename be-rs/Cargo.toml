@@ -9,7 +9,7 @@ anyhow = "1"
 bincode = "1"
 common-rs = {path = "../common-rs", features = ["turbosql"]}
 env_logger = "0.9"
-futures-util = {version = "0.3", default-features = false, features = ["async-await", "sink", "std"]}
+futures-util = "0.3"
 log = "0.4"
 tokio = {version = "1", features = ["full"]}
 tokio-tungstenite = "0.15"
