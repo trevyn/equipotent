@@ -11,5 +11,7 @@ common-rs = {path = "../common-rs", features = ["turbosql"]}
 env_logger = "0.9"
 futures-util = "0.3"
 log = "0.4"
+lol_html = "0.3"
+reqwest = "0.11"
 tokio = {version = "1", features = ["full"]}
 tokio-tungstenite = "0.15"
