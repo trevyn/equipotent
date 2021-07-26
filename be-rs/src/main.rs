@@ -6,6 +6,14 @@ use tokio::net::{TcpListener, TcpStream};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+ let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
+ let serialized = bincode::serialize(&mystruct).unwrap();
+ let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
+ // println!("{:?}", mystruct);
+ // dbg!(serialized);
+ // dbg!(&deserialized);
+ assert_eq!(mystruct, deserialized);
+
  let _ = env_logger::try_init();
  let addr = "127.0.0.1:8080".to_string();
 
@@ -31,7 +39,7 @@ async fn accept_connection(stream: TcpStream) {
 
  println!("New WebSocket connection: {}", addr);
 
- let (write, read) = ws_stream.split();
+ let (_write, read) = ws_stream.split();
 
  //  write
  //   .send(tokio_tungstenite::tungstenite::protocol::Message::Text(
@@ -53,13 +61,6 @@ async fn accept_connection(stream: TcpStream) {
   // tokio::io::stdout().write(&data).await.unwrap();
  });
 
- let namedstruct =
-  ExportedNamedStruct { inner: Some(99), bigsigned: Some(12), ..Default::default() };
- let serialized = bincode::serialize(&namedstruct).unwrap();
- let deserialized: ExportedNamedStruct = bincode::deserialize(&serialized).unwrap();
- println!("{:?}", namedstruct);
- dbg!(serialized);
- dbg!(deserialized);
  read_future.await;
 
  // read.forward(write).await.expect("Failed to forward message")

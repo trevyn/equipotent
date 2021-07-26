@@ -7,6 +7,15 @@ migrations_append_only = [
   'CREATE TABLE exportednamedstruct (rowid INTEGER PRIMARY KEY)',
   'ALTER TABLE exportednamedstruct ADD COLUMN inner INTEGER',
   'ALTER TABLE exportednamedstruct ADD COLUMN bigsigned INTEGER',
+  'CREATE TABLE resultitem (rowid INTEGER PRIMARY KEY)',
+  'ALTER TABLE resultitem ADD COLUMN url TEXT',
+  'ALTER TABLE resultitem ADD COLUMN host TEXT',
+  'ALTER TABLE resultitem ADD COLUMN title TEXT',
+  'ALTER TABLE resultitem ADD COLUMN snippet TEXT',
+  'ALTER TABLE resultitem ADD COLUMN source_query TEXT',
+  'ALTER TABLE resultitem ADD COLUMN source_query_url TEXT',
+  'ALTER TABLE resultitem ADD COLUMN source_result_pos INTEGER',
+  'ALTER TABLE resultitem ADD COLUMN last_scraped REAL',
 ]
 output_generated_schema_for_your_information_do_not_edit = '''
   CREATE TABLE _turbosql_migrations (
@@ -17,6 +26,17 @@ output_generated_schema_for_your_information_do_not_edit = '''
     rowid INTEGER PRIMARY KEY,
     inner INTEGER,
     bigsigned INTEGER
+  )
+  CREATE TABLE resultitem (
+    rowid INTEGER PRIMARY KEY,
+    url TEXT,
+    host TEXT,
+    title TEXT,
+    snippet TEXT,
+    source_query TEXT,
+    source_query_url TEXT,
+    source_result_pos INTEGER,
+    last_scraped REAL
   )
 '''
 [output_generated_tables_do_not_edit.exportednamedstruct]
@@ -36,3 +56,51 @@ sql_type = 'INTEGER'
 name = 'bigsigned'
 rust_type = 'Option < i64 >'
 sql_type = 'INTEGER'
+
+[output_generated_tables_do_not_edit.resultitem]
+name = 'resultitem'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'rowid'
+rust_type = 'Option < i64 >'
+sql_type = 'INTEGER PRIMARY KEY'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'url'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'host'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'title'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'snippet'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'source_query'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'source_query_url'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'source_result_pos'
+rust_type = 'Option < i32 >'
+sql_type = 'INTEGER'
+
+[[output_generated_tables_do_not_edit.resultitem.columns]]
+name = 'last_scraped'
+rust_type = 'Option < f64 >'
+sql_type = 'REAL'

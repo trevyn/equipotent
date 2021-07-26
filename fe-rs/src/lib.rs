@@ -17,8 +17,8 @@ extern "C" {
 use common_rs::*;
 
 #[wasm_bindgen]
-pub fn return_named_struct(inner: u32) -> ExportedNamedStruct {
- let mystruct = ExportedNamedStruct { inner: Some(inner), ..Default::default() };
+pub fn return_named_struct(inner: u32) -> ResultItem {
+ let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
  console_log!("{:?}", mystruct);
  mystruct
 }
