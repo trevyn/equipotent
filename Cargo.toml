@@ -8,7 +8,7 @@ members = [
 [patch.crates-io]
 lol_html = {git = "https://github.com/cloudflare/lol-html", branch = "master"}
 rusqlite = {git = "https://github.com/rusqlite/rusqlite", branch = "master"}
-wasm-bindgen = {git = "https://github.com/trevyn/wasm-bindgen", branch = "getter_with_clone"}# https://github.com/rustwasm/wasm-bindgen/pull/2633
+wasm-bindgen = {git = "https://github.com/rustwasm/wasm-bindgen", branch = "master"}
 
 [profile.release]
 codegen-units = 1 # Reduce number of codegen units to increase optimizations.
