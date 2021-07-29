@@ -1,11 +1,11 @@
 <script lang="ts">
- import init, * as mywasm from "../fe-rs/pkg";
+ import init, * as wasm from "../fe-rs/pkg";
 
  const maths = async () => {
   await init();
   // throw new Error("foo");
-  console.log(mywasm.return_named_struct(42));
-  return mywasm.add(10, 2);
+  console.log(wasm.return_named_struct(42));
+  return wasm.add(10, 2);
  };
 
  let promise = maths();
@@ -39,6 +39,3 @@
   </div>
  </div>
 </div>
-
-<style>
-</style>

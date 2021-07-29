@@ -1,31 +1,36 @@
-mod utils;
+#[allow(dead_code)]
+pub fn set_panic_hook() {
+ // When the `console_error_panic_hook` feature is enabled, we can call the
+ // `set_panic_hook` function at least once during initialization, and then
+ // we will get better error messages if our code ever panics.
+ //
+ // For more details see
+ // https://github.com/rustwasm/console_error_panic_hook#readme
+ #[cfg(feature = "console_error_panic_hook")]
+ console_error_panic_hook::set_once();
+}
 
+use common_rs::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 
 macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+ ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
 }
 
 #[wasm_bindgen]
 extern "C" {
  #[wasm_bindgen(js_namespace = console)]
  fn log(s: &str);
+ fn alert(s: &str);
 }
-
-use common_rs::*;
 
 #[wasm_bindgen]
 pub fn return_named_struct(_inner: u32) -> ResultItem {
  let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
  console_log!("{:?}", mystruct);
  mystruct
-}
-
-#[wasm_bindgen]
-extern "C" {
- fn alert(s: &str);
 }
 
 #[wasm_bindgen]
@@ -40,7 +45,6 @@ pub fn greet() {
 
 #[wasm_bindgen(start)]
 pub fn start_websocket() -> Result<(), JsValue> {
- // Connect to an echo server
  let ws = WebSocket::new("ws://127.0.0.1:8080")?;
  // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
