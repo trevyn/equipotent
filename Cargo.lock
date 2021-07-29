@@ -58,6 +58,7 @@ dependencies = [
  "anyhow",
  "bincode",
  "common-rs",
+ "d-macro",
  "env_logger",
  "futures-util",
  "log",
@@ -203,6 +204,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "d-macro"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4787669d51745b425471cedfc52f27bba7656f0bef8237581b2737c0d766d1de"
 
 [[package]]
 name = "derive_more"

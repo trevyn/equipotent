@@ -2,6 +2,7 @@ use futures_util::StreamExt;
 // use tokio::io::AsyncWriteExt;
 // use log::info;
 use common_rs::*;
+use d_macro::*;
 use tokio::net::{TcpListener, TcpStream};
 
 #[tokio::main]
@@ -14,17 +15,31 @@ async fn main() -> anyhow::Result<()> {
  let res = req.send().await?;
  let bytes = res.bytes().await?;
 
+ let buffer = std::rc::Rc::new(std::cell::RefCell::new(String::new()));
+
  let mut rewriter = lol_html::HtmlRewriter::new(
   lol_html::Settings {
    element_content_handlers: vec![
-    lol_html::element!("a[href]", |el| {
-     let href = el.get_attribute("href").expect("href was required");
-     println!("");
-     println!("----- {}", &href);
+    lol_html::element!(".links_main a[href]", |el| {
+     buffer.borrow_mut().clear();
+
+     dbg!(el.attributes());
+
+     let buffer = buffer.clone();
+     el.on_end_tag(move |end| {
+      let s = buffer.borrow();
+      d!(s);
+      dbg!(end);
+      Ok(())
+     })?;
+
+     // let href = el.get_attribute("href").expect("href was required");
+     // println!("");
+     // println!("----- {}", &href);
      Ok(())
     }),
-    lol_html::text!("a[href]", |el| {
-     print!("{}", el.as_str());
+    lol_html::text!(".links_main a[href]", |t| {
+     buffer.borrow_mut().push_str(t.as_str());
      Ok(())
     }),
    ],
