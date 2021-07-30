@@ -1,8 +1,8 @@
 <script lang="ts">
- import ResultItem from "./ResultItem.svelte";
  import initwasm, * as wasm from "../fe-rs/pkg";
+ import ResultItem from "./ResultItem.svelte";
 
- let promise = initwasm().then(() => {
+ let getitems = initwasm().then(() => {
   return [wasm.return_named_struct("one"), wasm.return_named_struct("two")];
  });
 </script>
@@ -21,7 +21,7 @@
       class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
       <p>
-       {#await promise then items}
+       {#await getitems then items}
         {#each items as item}
          <ResultItem {item} />
         {/each}
