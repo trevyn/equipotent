@@ -1,6 +1,7 @@
+#![allow(unused_imports)]
 use common_rs::*;
 use d_macro::*;
-use futures_util::StreamExt;
+use futures_util::{SinkExt, StreamExt};
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::tungstenite;
 use tungstenite::Message;
@@ -29,34 +30,16 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn accept_connection(stream: TcpStream) {
- let addr = stream.peer_addr().expect("connected streams should have a peer address");
- println!("Peer address: {}", addr);
-
- let ws_stream = tokio_tungstenite::accept_async(stream)
-  .await
-  .expect("Error during the websocket handshake occurred");
-
+ let addr = stream.peer_addr().unwrap();
+ let (_write, read) = tokio_tungstenite::accept_async(stream).await.unwrap().split();
  println!("New WebSocket connection: {}", addr);
-
- let (_write, read) = ws_stream.split();
-
- //  write
- //   .send(tokio_tungstenite::tungstenite::protocol::Message::Text(
- //    r#"{
- //   "event": "ping",
- //   "reqid": 42
- // }"#
- //     .to_string()
- //     + "\n",
- //   ))
- //   .await
- //   .unwrap();
 
  let read_future = read.for_each(|msg| async {
   match msg.unwrap() {
    Message::Text(t) => {
     println!("query: {:?}", t);
     do_query(&t).await.unwrap();
+    // write.send(Message::Text("{'event': 'ping'}\n".to_string())).await.unwrap();
    }
    msg => {
     dbg!(msg);
