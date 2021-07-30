@@ -64,11 +64,9 @@ async fn main() -> anyhow::Result<()> {
  assert_eq!(mystruct, deserialized);
 
  let _ = env_logger::try_init();
- let addr = "127.0.0.1:8080".to_string();
+ let addr = "127.0.0.1:8080";
 
- // Create the event loop and TCP listener we'll accept connections on.
- let try_socket = TcpListener::bind(&addr).await;
- let listener = try_socket.expect("Failed to bind");
+ let listener = TcpListener::bind(addr).await?;
  println!("Listening on: {}", addr);
 
  while let Ok((stream, _)) = listener.accept().await {
@@ -104,9 +102,11 @@ async fn accept_connection(stream: TcpStream) {
 
  //  println!("sent");
 
- let read_future = read.for_each(|message| async {
-  let data = message.unwrap().into_data();
-  println!("received {} bytes: {:?}", data.len(), data);
+ let read_future = read.for_each(|msg| async {
+  dbg!(msg.unwrap());
+
+  // let data = msg.unwrap().into_data();
+  // println!("received {} bytes: {:?}", data.len(), data);
   // tokio::io::stdout().write(&data).await.unwrap();
  });
 

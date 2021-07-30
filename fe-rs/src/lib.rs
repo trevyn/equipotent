@@ -1,19 +1,12 @@
-#[allow(dead_code)]
-pub fn set_panic_hook() {
- // When the `console_error_panic_hook` feature is enabled, we can call the
- // `set_panic_hook` function at least once during initialization, and then
- // we will get better error messages if our code ever panics.
- //
- // For more details see
- // https://github.com/rustwasm/console_error_panic_hook#readme
- #[cfg(feature = "console_error_panic_hook")]
- console_error_panic_hook::set_once();
-}
-
 use common_rs::*;
+use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
+
+thread_local! {
+ static WS: RefCell<Option<WebSocket>> = RefCell::new(None);
+}
 
 macro_rules! console_log {
  ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
@@ -23,7 +16,6 @@ macro_rules! console_log {
 extern "C" {
  #[wasm_bindgen(js_namespace = console)]
  fn log(s: &str);
- fn alert(s: &str);
 }
 
 #[wasm_bindgen]
@@ -35,18 +27,18 @@ pub fn return_named_struct(inner: String) -> ResultItem {
 }
 
 #[wasm_bindgen]
-pub fn add(a: i32, b: i32) -> i32 {
- a + b
+pub fn set_search(query: String) {
+ console_log!("set_search: {:?}", query);
+ WS.with(|ws| {
+  if let Some(ws) = ws.borrow().as_ref() {
+   if let Err(e) = ws.send_with_str(&query) {
+    console_log!("websocket send err: {:?}", e);
+   }
+  }
+ });
 }
 
-#[wasm_bindgen]
-pub fn greet() {
- alert("Hello, mywasm!");
-}
-
-#[wasm_bindgen(start)]
-pub fn start_websocket() -> Result<(), JsValue> {
- let ws = WebSocket::new("ws://127.0.0.1:8080")?;
+fn init_ws(ws: &WebSocket) {
  // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
@@ -115,6 +107,17 @@ pub fn start_websocket() -> Result<(), JsValue> {
  }) as Box<dyn FnMut(JsValue)>);
  ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
  onopen_callback.forget();
+}
+
+#[wasm_bindgen(start)]
+pub fn start() -> Result<(), JsValue> {
+ console_error_panic_hook::set_once();
+ let new_ws = WebSocket::new("ws://127.0.0.1:8080")?;
+
+ WS.with(|ws| {
+  init_ws(&new_ws);
+  ws.replace(Some(new_ws));
+ });
 
  Ok(())
 }
