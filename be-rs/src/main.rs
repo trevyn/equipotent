@@ -1,7 +1,7 @@
 #![allow(unused_imports)]
 use common_rs::*;
 use d_macro::*;
-use futures_util::StreamExt;
+use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -34,15 +34,17 @@ async fn main() -> anyhow::Result<()> {
 
 async fn accept_connection(stream: TcpStream) {
  let addr = stream.peer_addr().unwrap();
- let (_write, read) = tokio_tungstenite::accept_async(stream).await.unwrap().split();
+ let (write, read) = tokio_tungstenite::accept_async(stream).await.unwrap().split();
  println!("New WebSocket connection: {}", addr);
+
+ let (tx, rx) = futures_channel::mpsc::unbounded();
 
  let read_future = read.for_each(|msg| async {
   match msg.unwrap() {
    Message::Text(t) => {
     println!("query: {:?}", t);
-    do_query(&t).await.unwrap();
-    // write.send(Message::Text("{'event': 'ping'}\n".to_string())).await.unwrap();
+    let json = do_query(&t).await.unwrap();
+    tx.unbounded_send(Message::Text(json)).unwrap();
    }
    msg => {
     dbg!(msg);
@@ -52,14 +54,14 @@ async fn accept_connection(stream: TcpStream) {
   // let data = msg.unwrap().into_data();
  });
 
- read_future.await;
+ let receive = rx.map(Ok).forward(write);
+ pin_mut!(read_future, receive);
+ future::select(read_future, receive).await;
+
+ // read_future.await;
 }
 
-async fn do_query(query: &str) -> anyhow::Result<()> {
- // let links_main = Selector::parse(r#".links_main"#).unwrap();
- // let result_snippet = Selector::parse(r#".result__snippet"#).unwrap();
- // let result_a = Selector::parse(r#".result__a"#).unwrap();
-
+async fn do_query(query: &str) -> anyhow::Result<String> {
  let req_url = format!("https://html.duckduckgo.com/html?q={}", query);
  let agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0";
 
@@ -78,6 +80,10 @@ async fn do_query(query: &str) -> anyhow::Result<()> {
  let mut rewriter = lol_html::HtmlRewriter::new(
   lol_html::Settings {
    element_content_handlers: vec![
+    lol_html::text!(".links_main a[href]", |t| {
+     text_buffer.borrow_mut().push_str(t.as_str());
+     Ok(())
+    }),
     lol_html::element!(".links_main a[href]", |el| {
      text_buffer.borrow_mut().clear();
      let text = text_buffer.clone();
@@ -123,10 +129,6 @@ async fn do_query(query: &str) -> anyhow::Result<()> {
 
      Ok(())
     }),
-    lol_html::text!(".links_main a[href]", |t| {
-     text_buffer.borrow_mut().push_str(t.as_str());
-     Ok(())
-    }),
    ],
    ..lol_html::Settings::default()
   },
@@ -136,7 +138,7 @@ async fn do_query(query: &str) -> anyhow::Result<()> {
  rewriter.write(&bytes)?;
  rewriter.end()?;
 
- dbg!(items);
-
- Ok(())
+ let items = items.borrow();
+ let items: Vec<_> = items.values().collect();
+ Ok(serde_json::to_string(&items)?)
 }
