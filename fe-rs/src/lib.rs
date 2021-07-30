@@ -52,7 +52,6 @@ fn init_ws(ws: &WebSocket) {
    let len = array.byte_length() as usize;
    console_log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
    // here you can for example use Serde Deserialize decode the message
-   // for demo purposes we switch back to Blob-type and send off another binary message
    cloned_ws.set_binary_type(web_sys::BinaryType::Blob);
    match cloned_ws.send_with_u8_array(&vec![5, 6, 7, 8]) {
     Ok(_) => console_log!("binary message successfully sent"),
@@ -79,9 +78,7 @@ fn init_ws(ws: &WebSocket) {
    console_log!("message event, received Unknown: {:?}", e.data());
   }
  }) as Box<dyn FnMut(MessageEvent)>);
- // set message event handler on WebSocket
  ws.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
- // forget the callback to keep it alive
  onmessage_callback.forget();
 
  // onerror callback

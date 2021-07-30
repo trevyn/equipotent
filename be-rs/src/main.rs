@@ -1,17 +1,12 @@
-use futures_util::StreamExt;
-// use tokio::io::AsyncWriteExt;
-// use log::info;
 use common_rs::*;
 use d_macro::*;
+use futures_util::StreamExt;
 use tokio::net::{TcpListener, TcpStream};
-use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::tungstenite;
+use tungstenite::Message;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
- // let links_main = Selector::parse(r#".links_main"#).unwrap();
- // let result_snippet = Selector::parse(r#".result__snippet"#).unwrap();
- // let result_a = Selector::parse(r#".result__a"#).unwrap();
-
  let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
  let serialized = bincode::serialize(&mystruct).unwrap();
  let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
@@ -57,8 +52,6 @@ async fn accept_connection(stream: TcpStream) {
  //   .await
  //   .unwrap();
 
- //  println!("sent");
-
  let read_future = read.for_each(|msg| async {
   match msg.unwrap() {
    Message::Text(t) => {
@@ -71,16 +64,16 @@ async fn accept_connection(stream: TcpStream) {
   };
 
   // let data = msg.unwrap().into_data();
-  // println!("received {} bytes: {:?}", data.len(), data);
-  // tokio::io::stdout().write(&data).await.unwrap();
  });
 
  read_future.await;
-
- // read.forward(write).await.expect("Failed to forward message")
 }
 
 async fn do_query(query: &str) -> anyhow::Result<()> {
+ // let links_main = Selector::parse(r#".links_main"#).unwrap();
+ // let result_snippet = Selector::parse(r#".result__snippet"#).unwrap();
+ // let result_a = Selector::parse(r#".result__a"#).unwrap();
+
  let req_url = format!("https://html.duckduckgo.com/html?q={}", query);
  let agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0";
 
