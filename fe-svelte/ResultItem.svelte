@@ -1,6 +1,8 @@
 <script lang="ts">
  import * as wasm from "../fe-rs/pkg";
- export let resultitem: wasm.ResultItem;
+ export let item: wasm.ResultItem;
 </script>
 
-ResultItem: {resultitem.rowid} - {resultitem.url} - {resultitem.title}
+<div>
+ ResultItem: {item.rowid} - {item.url} - {item.title}
+</div>

@@ -1,14 +1,10 @@
 <script lang="ts">
  import ResultItem from "./ResultItem.svelte";
- import init, * as wasm from "../fe-rs/pkg";
+ import initwasm, * as wasm from "../fe-rs/pkg";
 
- const maths = async () => {
-  await init();
-  // throw new Error("foo");
-  return wasm.add(10, 2);
- };
-
- let promise = maths();
+ let promise = initwasm().then(() => {
+  return [wasm.return_named_struct("one"), wasm.return_named_struct("two")];
+ });
 </script>
 
 <div
@@ -25,11 +21,10 @@
       class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
       <p>
-       {#await promise}
-        <p>...waiting</p>
-       {:then number}
-        <p>The number is {number}</p>
-        <ResultItem resultitem={wasm.return_named_struct("fourty-eight")} />
+       {#await promise then items}
+        {#each items as item}
+         <ResultItem {item} />
+        {/each}
        {:catch error}
         <p style="color: red">Error: {error.message}</p>
        {/await}
