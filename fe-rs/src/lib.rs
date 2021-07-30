@@ -20,10 +20,7 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn return_named_struct(inner: String) -> ResultItem {
- let mystruct =
-  ResultItem { url: Some("jk!!".to_string()), title: Some(inner), ..Default::default() };
- console_log!("{:?}", mystruct);
- mystruct
+ ResultItem { url: Some("jk!!".to_string()), title: Some(inner), ..Default::default() }
 }
 
 #[wasm_bindgen]
@@ -39,19 +36,17 @@ pub fn set_search(query: String) {
 }
 
 fn init_ws(ws: &WebSocket) {
- // For small binary messages, like CBOR, Arraybuffer is more efficient than Blob handling
+ // For small binary messages, Arraybuffer is more efficient than Blob
  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
 
  // onmessage callback
  let cloned_ws = ws.clone();
  let onmessage_callback = Closure::wrap(Box::new(move |e: MessageEvent| {
-  // Handle difference Text/Binary,...
   if let Ok(abuf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
    console_log!("message event, received arraybuffer: {:?}", abuf);
    let array = js_sys::Uint8Array::new(&abuf);
    let len = array.byte_length() as usize;
    console_log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
-   // here you can for example use Serde Deserialize decode the message
    cloned_ws.set_binary_type(web_sys::BinaryType::Blob);
    match cloned_ws.send_with_u8_array(&vec![5, 6, 7, 8]) {
     Ok(_) => console_log!("binary message successfully sent"),
@@ -62,7 +57,6 @@ fn init_ws(ws: &WebSocket) {
    // better alternative to juggling with FileReader is to use https://crates.io/crates/gloo-file
    let fr = web_sys::FileReader::new().unwrap();
    let fr_c = fr.clone();
-   // create onLoadEnd callback
    let onloadend_cb = Closure::wrap(Box::new(move |_e: web_sys::ProgressEvent| {
     let array = js_sys::Uint8Array::new(&fr_c.result().unwrap());
     let len = array.byte_length() as usize;
@@ -92,11 +86,7 @@ fn init_ws(ws: &WebSocket) {
  // let cloned_ws = ws.clone();
  let onopen_callback = Closure::wrap(Box::new(move |_| {
   console_log!("socket opened");
-  // send off binary message
-  // match cloned_ws.send_with_u8_array(&vec![0, 1, 2, 3]) {
-  //  Ok(_) => console_log!("binary message successfully sent"),
-  //  Err(err) => console_log!("error sending message: {:?}", err),
-  // }
+  // cloned_ws.send_with_u8_array(&vec![0, 1, 2, 3]).unwrap();
  }) as Box<dyn FnMut(JsValue)>);
  ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
  onopen_callback.forget();

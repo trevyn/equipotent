@@ -1,7 +1,10 @@
 #![allow(unused_imports)]
 use common_rs::*;
 use d_macro::*;
-use futures_util::{SinkExt, StreamExt};
+use futures_util::StreamExt;
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::tungstenite;
 use tungstenite::Message;
@@ -65,31 +68,63 @@ async fn do_query(query: &str) -> anyhow::Result<()> {
  let res = req.send().await?;
  let bytes = res.bytes().await?;
 
- let buffer = std::rc::Rc::new(std::cell::RefCell::new(String::new()));
+ let text_buffer = Rc::new(RefCell::new(String::new()));
+ let items = Rc::new(RefCell::new(HashMap::<String, ResultItem>::new()));
+ let result_pos = Rc::new(RefCell::new(1i32));
+ let scrapetime = std::time::SystemTime::now()
+  .duration_since(std::time::SystemTime::UNIX_EPOCH)?
+  .as_millis() as f64;
 
  let mut rewriter = lol_html::HtmlRewriter::new(
   lol_html::Settings {
    element_content_handlers: vec![
     lol_html::element!(".links_main a[href]", |el| {
-     buffer.borrow_mut().clear();
+     text_buffer.borrow_mut().clear();
+     let text = text_buffer.clone();
+     let attrs: HashMap<_, _> = el.attributes().iter().map(|a| (a.name(), a.value())).collect();
+     let items = items.clone();
+     let result_pos = result_pos.clone();
+     let req_url = req_url.clone();
+     let query = query.to_owned();
 
-     dbg!(el.attributes());
+     el.on_end_tag(move |_end_tag| {
+      let href = attrs["href"].as_str();
+      if items.borrow().contains_key(href) == false {
+       let parsed_href = url::Url::parse(href).unwrap();
+       let host = parsed_href.host_str().unwrap();
+       items.borrow_mut().insert(
+        href.to_string(),
+        ResultItem {
+         url: Some(href.to_string()),
+         host: Some(host.to_string()),
+         source_query: Some(query.clone()),
+         source_query_url: Some(req_url.clone()),
+         source_result_pos: Some(*result_pos.borrow()),
+         last_scraped: Some(scrapetime),
+         ..Default::default()
+        },
+       );
+       *result_pos.borrow_mut() += 1;
+      }
 
-     let buffer = buffer.clone();
-     el.on_end_tag(move |end| {
-      let s = buffer.borrow();
-      d!(s);
-      dbg!(end);
+      if let Some(c) = attrs.get("class") {
+       let mut items = items.borrow_mut();
+       let item = items.get_mut(href).unwrap();
+       let text = Some(text.borrow().clone());
+       match c.as_str() {
+        "result__a" => item.title = text,
+        "result__snippet" => item.snippet = text,
+        _ => (),
+       }
+      };
+
       Ok(())
      })?;
 
-     // let href = el.get_attribute("href").expect("href was required");
-     // println!("");
-     // println!("----- {}", &href);
      Ok(())
     }),
     lol_html::text!(".links_main a[href]", |t| {
-     buffer.borrow_mut().push_str(t.as_str());
+     text_buffer.borrow_mut().push_str(t.as_str());
      Ok(())
     }),
    ],
@@ -98,8 +133,10 @@ async fn do_query(query: &str) -> anyhow::Result<()> {
   |_: &[u8]| {},
  );
 
- rewriter.write(bytes.as_ref())?;
+ rewriter.write(&bytes)?;
  rewriter.end()?;
+
+ dbg!(items);
 
  Ok(())
 }

@@ -66,6 +66,7 @@ dependencies = [
  "reqwest",
  "tokio",
  "tokio-tungstenite",
+ "url",
 ]
 
 [[package]]
