@@ -1,5 +1,6 @@
 {
  "scripts": {
-  "start": "cargo watch -c -w .. -x run"
+  "start": "cargo watch -c -w .. -x run",
+  "cargo-update": "cargo update"
  }
 }
