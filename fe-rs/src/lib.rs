@@ -27,8 +27,9 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn return_named_struct(_inner: u32) -> ResultItem {
- let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
+pub fn return_named_struct(inner: String) -> ResultItem {
+ let mystruct =
+  ResultItem { url: Some("jk!!".to_string()), title: Some(inner), ..Default::default() };
  console_log!("{:?}", mystruct);
  mystruct
 }

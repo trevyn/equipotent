@@ -1,10 +1,10 @@
 <script lang="ts">
+ import ResultItem from "./ResultItem.svelte";
  import init, * as wasm from "../fe-rs/pkg";
 
  const maths = async () => {
   await init();
   // throw new Error("foo");
-  console.log(wasm.return_named_struct(42));
   return wasm.add(10, 2);
  };
 
@@ -29,6 +29,7 @@
         <p>...waiting</p>
        {:then number}
         <p>The number is {number}</p>
+        <ResultItem resultitem={wasm.return_named_struct("fourty-eight")} />
        {:catch error}
         <p style="color: red">Error: {error.message}</p>
        {/await}
