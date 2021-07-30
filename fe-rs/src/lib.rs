@@ -92,18 +92,14 @@ fn init_ws(ws: &WebSocket) {
  onerror_callback.forget();
 
  // onopen callback
- let cloned_ws = ws.clone();
+ // let cloned_ws = ws.clone();
  let onopen_callback = Closure::wrap(Box::new(move |_| {
   console_log!("socket opened");
-  match cloned_ws.send_with_str("ping") {
-   Ok(_) => console_log!("message successfully sent"),
-   Err(err) => console_log!("error sending message: {:?}", err),
-  }
   // send off binary message
-  match cloned_ws.send_with_u8_array(&vec![0, 1, 2, 3]) {
-   Ok(_) => console_log!("binary message successfully sent"),
-   Err(err) => console_log!("error sending message: {:?}", err),
-  }
+  // match cloned_ws.send_with_u8_array(&vec![0, 1, 2, 3]) {
+  //  Ok(_) => console_log!("binary message successfully sent"),
+  //  Err(err) => console_log!("error sending message: {:?}", err),
+  // }
  }) as Box<dyn FnMut(JsValue)>);
  ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
  onopen_callback.forget();
