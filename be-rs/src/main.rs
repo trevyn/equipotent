@@ -11,13 +11,10 @@ use tungstenite::Message;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
- let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
- let serialized = bincode::serialize(&mystruct).unwrap();
- let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
- // println!("{:?}", mystruct);
- // dbg!(serialized);
- // dbg!(&deserialized);
- assert_eq!(mystruct, deserialized);
+ // let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
+ // let serialized = bincode::serialize(&mystruct).unwrap();
+ // let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
+ // assert_eq!(mystruct, deserialized);
 
  let _ = env_logger::try_init();
  let addr = "127.0.0.1:8080";

@@ -1,3 +1,10 @@
+<script context="module">
+ let set_items;
+ export function set_json(json) {
+  set_items(json);
+ }
+</script>
+
 <script lang="ts">
  import * as wasm from "../fe-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
@@ -5,6 +12,10 @@
  let items = [wasm.return_named_struct("one"), wasm.return_named_struct("two")];
 
  let query = "banana";
+
+ set_items = (json) => {
+  items = JSON.parse(json);
+ };
 
  $: wasm.set_search(query);
 </script>

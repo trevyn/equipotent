@@ -18,6 +18,11 @@ extern "C" {
  fn log(s: &str);
 }
 
+#[wasm_bindgen(raw_module = "../../AppContents.svelte.js")]
+extern "C" {
+ fn set_json(json: String);
+}
+
 #[wasm_bindgen]
 pub fn return_named_struct(inner: String) -> ResultItem {
  ResultItem { url: Some("jk!!".to_string()), title: Some(inner), ..Default::default() }
@@ -67,7 +72,11 @@ fn init_ws(ws: &WebSocket) {
    fr.read_as_array_buffer(&blob).expect("blob not readable");
    onloadend_cb.forget();
   } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {
-   console_log!("message event, received Text: {:?}", txt);
+   // console_log!("message event, received Text: {:?}", txt);
+   let json: String = txt.into();
+   // let items: Vec<ResultItem> = serde_json::from_str(&json).unwrap();
+   // console_log!("{:?}", items);
+   set_json(json);
   } else {
    console_log!("message event, received Unknown: {:?}", e.data());
   }
