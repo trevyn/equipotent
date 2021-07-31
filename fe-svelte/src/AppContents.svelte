@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
- import * as wasm from "../fe-rs/pkg";
+ import * as wasm from "../../fe-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
 
  let items = [];

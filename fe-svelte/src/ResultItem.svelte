@@ -1,5 +1,5 @@
 <script lang="ts">
- import * as wasm from "../fe-rs/pkg";
+ import * as wasm from "../../fe-rs/pkg";
  export let item: wasm.ResultItem;
 </script>
 

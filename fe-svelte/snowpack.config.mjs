@@ -1,7 +1,9 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
 export default {
  mount: {
-  /* ... */
+  "./src": {
+   url: "/",
+  },
  },
  plugins: [
   "@snowpack/plugin-typescript",
@@ -19,9 +21,11 @@ export default {
   // {"match": "routes", "src": ".*", "dest": "/index.html"},
  ],
  optimize: {
-  /* Example: Bundle your final build: */
-  // "bundle": true,
+  bundle: true,
+  // minify: true,
+  target: "esnext",
  },
+ exclude: ["**/*.json", "**/*.md"],
  packageOptions: {
   /* ... */
  },
