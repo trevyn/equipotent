@@ -69,7 +69,7 @@ async fn do_query(query: &str) -> anyhow::Result<String> {
 
  let text_buffer = Rc::new(RefCell::new(String::new()));
  let items = Rc::new(RefCell::new(HashMap::<String, ResultItem>::new()));
- let result_pos = Rc::new(RefCell::new(1i32));
+ let result_pos = Rc::new(RefCell::new(0i32));
  let scrapetime = std::time::SystemTime::now()
   .duration_since(std::time::SystemTime::UNIX_EPOCH)?
   .as_millis() as f64;
@@ -91,29 +91,27 @@ async fn do_query(query: &str) -> anyhow::Result<String> {
      let query = query.to_owned();
 
      el.on_end_tag(move |_end_tag| {
-      let href = attrs["href"].as_str();
-      if items.borrow().contains_key(href) == false {
+      let href = &attrs["href"];
+      let mut items = items.borrow_mut();
+
+      let item = items.entry(href.to_string()).or_insert_with(|| {
        let parsed_href = url::Url::parse(href).unwrap();
        let host = parsed_href.host_str().unwrap();
-       items.borrow_mut().insert(
-        href.to_string(),
-        ResultItem {
-         url: Some(href.to_string()),
-         host: Some(host.to_string()),
-         source_query: Some(query.clone()),
-         source_query_url: Some(req_url.clone()),
-         source_result_pos: Some(*result_pos.borrow()),
-         last_scraped: Some(scrapetime),
-         ..Default::default()
-        },
-       );
-       *result_pos.borrow_mut() += 1;
-      }
+       let mut result_pos = result_pos.borrow_mut();
+       *result_pos += 1;
+       ResultItem {
+        url: Some(href.to_string()),
+        host: Some(host.to_string()),
+        source_query: Some(query.clone()),
+        source_query_url: Some(req_url.clone()),
+        source_result_pos: Some(*result_pos),
+        last_scraped: Some(scrapetime),
+        ..Default::default()
+       }
+      });
 
       if let Some(c) = attrs.get("class") {
-       let mut items = items.borrow_mut();
-       let item = items.get_mut(href).unwrap();
-       let text = Some(html_escape::decode_html_entities(&text.borrow().clone()).to_string());
+       let text = Some(html_escape::decode_html_entities(text.borrow().as_str()).to_string());
        match c.as_str() {
         "result__a" => item.title = text,
         "result__snippet" => item.snippet = text,
