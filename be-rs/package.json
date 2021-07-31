@@ -1,6 +1,6 @@
 {
  "scripts": {
-  "start": "cargo watch -c -w .. -x run",
+  "start": "RUST_LOG=debug cargo watch -c -w .. -x run",
   "cargo-update": "cargo update"
  }
 }

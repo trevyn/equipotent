@@ -1,7 +1,7 @@
 #![allow(unused_imports)]
 use common_rs::*;
-use d_macro::*;
 use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
+use log::{debug, error, info, trace, warn};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -11,12 +11,17 @@ use tungstenite::Message;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
- // let mystruct = ResultItem { url: Some("imastring!!".to_string()), ..Default::default() };
  // let serialized = bincode::serialize(&mystruct).unwrap();
  // let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
- // assert_eq!(mystruct, deserialized);
 
- let _ = env_logger::try_init();
+ pretty_env_logger::init_timed();
+ let warplog = warp::log("equipotent");
+
+ warn!("warn enabled");
+ info!("info enabled");
+ debug!("debug enabled");
+ trace!("trace enabled");
+
  let addr = "127.0.0.1:8080";
 
  let listener = TcpListener::bind(addr).await?;

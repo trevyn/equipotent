@@ -8,6 +8,7 @@ members = [
 [patch.crates-io]
 lol_html = {git = "https://github.com/cloudflare/lol-html", branch = "master"}
 rusqlite = {git = "https://github.com/rusqlite/rusqlite", branch = "master"}
+warp = {git = "https://github.com/seanmonstar/warp", branch = "master"}
 wasm-bindgen = {git = "https://github.com/rustwasm/wasm-bindgen", branch = "master"}
 
 [profile.release]
