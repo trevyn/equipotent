@@ -9,33 +9,39 @@
  import * as wasm from "../fe-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
 
- let items = [wasm.return_named_struct("one"), wasm.return_named_struct("two")];
-
- let query = "banana";
+ let items = [];
+ let query = "";
 
  set_items = (json) => {
   items = JSON.parse(json);
  };
 
- $: wasm.set_search(query);
+ // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
 
-<div
- class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12"
->
- <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center">
+ <div class="relative p-5 sm:mx-auto">
   <div
    class="absolute -inset-10 bg-gradient-to-r from-pink-200 to-sky-200 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
   />
-  <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-   <div class="max-w-md mx-auto">
+  <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-10">
+   <div class="mx-auto">
     <div class="divide-y divide-gray-200">
      <div
-      class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
+      class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <input bind:value={query} />
+      <!-- svelte-ignore a11y-autofocus -->
+      <input
+       class="p-5 text-5xl w-full"
+       autofocus
+       bind:value={query}
+       on:keydown={(e) => {
+        if (e.keyCode == 13) {
+         wasm.set_search(query);
+        }
+       }}
+      />
       <p>
-       query is: {query}
        {#each items as item (item)}
         <!-- (item.rowid) -->
         <ResultItem {item} />

@@ -113,7 +113,7 @@ async fn do_query(query: &str) -> anyhow::Result<String> {
       if let Some(c) = attrs.get("class") {
        let mut items = items.borrow_mut();
        let item = items.get_mut(href).unwrap();
-       let text = Some(text.borrow().clone());
+       let text = Some(html_escape::decode_html_entities(&text.borrow().clone()).to_string());
        match c.as_str() {
         "result__a" => item.title = text,
         "result__snippet" => item.snippet = text,

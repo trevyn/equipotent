@@ -27,6 +27,7 @@ export default {
  },
  devOptions: {
   tailwindConfig: "./tailwind.config.js",
+  port: 8081,
  },
  buildOptions: {
   /* ... */
