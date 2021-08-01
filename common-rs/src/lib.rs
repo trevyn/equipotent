@@ -18,3 +18,32 @@ pub struct ResultItem {
  pub source_result_pos: Option<i32>,
  pub last_scraped: Option<f64>,
 }
+
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(getter_with_clone))]
+#[derive(Serialize, Deserialize, Clone, Default, Debug)]
+pub struct SearchQueryResultItem {
+ pub search_highlighted_url: String,
+ pub title: String,
+ pub snippet: String,
+ pub url: String,
+ pub host: String,
+ pub bookmarked: bool,
+ pub hostaffection: i32,
+ pub rank: f64,
+}
+
+#[cfg(feature = "turbosql")]
+#[derive(Turbosql, Clone, Default, Debug)]
+pub struct HostAffection {
+ pub rowid: Option<i64>,
+ pub host: Option<String>,
+ pub affection: Option<i32>,
+}
+
+#[cfg(feature = "turbosql")]
+#[derive(Turbosql, Clone, Default, Debug)]
+pub struct Bookmark {
+ pub rowid: Option<i64>,
+ pub url: Option<String>,
+ pub timestamp: Option<f64>,
+}
