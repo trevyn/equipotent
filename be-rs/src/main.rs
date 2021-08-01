@@ -17,6 +17,9 @@ async fn main() -> anyhow::Result<()> {
  pretty_env_logger::init_timed();
  let warplog = warp::log("equipotent");
 
+ info!("running initial query to pool connection...");
+ do_query("hello").await.unwrap();
+
  warn!("warn enabled");
  info!("info enabled");
  debug!("debug enabled");
@@ -25,7 +28,7 @@ async fn main() -> anyhow::Result<()> {
  let addr = "127.0.0.1:8080";
 
  let listener = TcpListener::bind(addr).await?;
- println!("Listening on: {}", addr);
+ info!("Listening on: {}", addr);
 
  while let Ok((stream, _)) = listener.accept().await {
   tokio::spawn(accept_connection(stream));
@@ -37,15 +40,17 @@ async fn main() -> anyhow::Result<()> {
 async fn accept_connection(stream: TcpStream) {
  let addr = stream.peer_addr().unwrap();
  let (write, read) = tokio_tungstenite::accept_async(stream).await.unwrap().split();
- println!("New WebSocket connection: {}", addr);
+ info!("New WebSocket connection: {}", addr);
 
  let (tx, rx) = futures_channel::mpsc::unbounded();
 
  let read_future = read.for_each(|msg| async {
   match msg.unwrap() {
    Message::Text(t) => {
-    println!("query: {:?}", t);
+    info!("query: {:?} start", t);
     let json = do_query(&t).await.unwrap();
+    info!("query: {:?} response sent", t);
+
     tx.unbounded_send(Message::Text(json)).unwrap();
    }
    msg => {
