@@ -15,7 +15,7 @@ async fn main() -> anyhow::Result<()> {
  // let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
 
  pretty_env_logger::init_timed();
- let warplog = warp::log("equipotent");
+ let _warplog = warp::log("equipotent");
 
  info!("running initial query to pool connection...");
  do_query("hello").await.unwrap();

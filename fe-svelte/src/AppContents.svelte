@@ -19,12 +19,12 @@
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
 
-<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center">
+<div class="min-h-screen bg-gray-900 py-6 flex flex-col justify-center">
  <div class="relative p-5 sm:mx-auto">
   <div
-   class="absolute -inset-10 bg-gradient-to-r from-pink-200 to-sky-200 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
+   class="absolute -inset-10 bg-gradient-to-r from-pink-900 to-sky-700 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
   />
-  <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-10">
+  <div class="relative px-4 py-10 bg-gray-900 shadow-lg sm:rounded-3xl sm:p-10">
    <div class="mx-auto">
     <div class="divide-y divide-gray-200">
      <div
