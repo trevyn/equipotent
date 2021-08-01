@@ -1,4 +1,4 @@
-use common_rs::*;
+pub use common_rs::*;
 use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
