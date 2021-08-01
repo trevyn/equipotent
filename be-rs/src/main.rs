@@ -92,9 +92,9 @@ async fn accept_connection(ws: WebSocket) {
   };
   if let Ok(t) = msg.to_str() {
    info!("query: {:?} start", t);
-   let json = do_query(&t).await.unwrap();
+   let items = do_query(&t).await.unwrap();
    info!("query: {:?} response sent", t);
-   tx.send(Message::text(json)).unwrap();
+   tx.send(Message::text(serde_json::to_string(&items).unwrap())).unwrap();
   } else {
    error!("received non-text message: {:?}", msg);
   };
@@ -103,7 +103,7 @@ async fn accept_connection(ws: WebSocket) {
  info!("accept_connection completed")
 }
 
-async fn do_query(query: &str) -> anyhow::Result<String> {
+async fn do_query(query: &str) -> anyhow::Result<Vec<ResultItem>> {
  let req_url = format!("https://html.duckduckgo.com/html?q={}", query);
  let agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0";
 
@@ -178,7 +178,5 @@ async fn do_query(query: &str) -> anyhow::Result<String> {
  rewriter.write(&bytes)?;
  rewriter.end()?;
 
- let items = items.borrow();
- let items: Vec<_> = items.values().collect();
- Ok(serde_json::to_string(&items)?)
+ Ok(Rc::try_unwrap(items).unwrap().into_inner().into_values().collect())
 }
