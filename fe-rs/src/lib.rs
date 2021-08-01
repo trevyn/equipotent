@@ -24,11 +24,6 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn return_named_struct(inner: String) -> ResultItem {
- ResultItem { url: Some("jk!!".to_string()), title: Some(inner), ..Default::default() }
-}
-
-#[wasm_bindgen]
 pub fn set_search(query: String) {
  console_log!("set_search: {:?}", query);
  WS.with(|ws| {
