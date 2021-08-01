@@ -104,7 +104,7 @@ fn init_ws(ws: &WebSocket) {
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
  console_error_panic_hook::set_once();
- let new_ws = WebSocket::new("ws://127.0.0.1:8080")?;
+ let new_ws = WebSocket::new("ws://127.0.0.1:8080/socket")?;
 
  WS.with(|ws| {
   init_ws(&new_ws);

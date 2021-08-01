@@ -1,13 +1,27 @@
-#![allow(unused_imports)]
+// #![allow(unused_imports)]
+use clap::Clap;
 use common_rs::*;
-use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
+use futures::{SinkExt, StreamExt, TryFutureExt};
 use log::{debug, error, info, trace, warn};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-use tokio::net::{TcpListener, TcpStream};
-use tokio_tungstenite::tungstenite;
-use tungstenite::Message;
+use tokio::sync::mpsc;
+use tokio_stream::wrappers::UnboundedReceiverStream;
+use warp::ws::{Message, WebSocket};
+use warp::Filter;
+
+#[derive(Clap, Debug)]
+struct Opts {
+ #[clap(short, long)]
+ cert_path: Option<String>,
+ #[clap(short, long)]
+ key_path: Option<String>,
+ #[clap(short, long, default_value = "8080")]
+ port: u16,
+ // #[clap(long)]
+ // password: String,
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -15,7 +29,7 @@ async fn main() -> anyhow::Result<()> {
  // let deserialized: ResultItem = bincode::deserialize(&serialized).unwrap();
 
  pretty_env_logger::init_timed();
- let _warplog = warp::log("equipotent");
+ let opts = Opts::parse();
 
  info!("running initial query to pool connection...");
  do_query("hello").await.unwrap();
@@ -25,47 +39,68 @@ async fn main() -> anyhow::Result<()> {
  debug!("debug enabled");
  trace!("trace enabled");
 
- let addr = "127.0.0.1:8080";
+ // let routes = warp::any().map(|| Ok(warp::reply::html("hello"))).with(warp::log("routes"));
 
- let listener = TcpListener::bind(addr).await?;
- info!("Listening on: {}", addr);
+ let routes = warp::path("socket")
+  .and(warp::ws())
+  .map(|ws: warp::ws::Ws| ws.on_upgrade(move |socket| accept_connection(socket)))
+  .with(warp::log("routes"));
 
- while let Ok((stream, _)) = listener.accept().await {
-  tokio::spawn(accept_connection(stream));
+ match (opts.key_path, opts.cert_path) {
+  (Some(key_path), Some(cert_path)) => {
+   eprintln!("Serving HTTPS on port {}", opts.port);
+   warp::serve(routes)
+    .tls()
+    .cert_path(cert_path)
+    .key_path(key_path)
+    .run(([0, 0, 0, 0], opts.port))
+    .await;
+  }
+  (None, None) => {
+   eprintln!("Serving (unsecured) HTTP on port {}", opts.port);
+   warp::serve(routes).run(([0, 0, 0, 0], opts.port)).await;
+  }
+  _ => panic!("Both key-path and cert-path must be specified for HTTPS."),
  }
 
  Ok(())
 }
 
-async fn accept_connection(stream: TcpStream) {
- let addr = stream.peer_addr().unwrap();
- let (write, read) = tokio_tungstenite::accept_async(stream).await.unwrap().split();
- info!("New WebSocket connection: {}", addr);
+async fn accept_connection(ws: WebSocket) {
+ let (mut ws_tx, mut ws_rx) = ws.split();
+ let (tx, rx) = mpsc::unbounded_channel();
+ let mut rx = UnboundedReceiverStream::new(rx);
 
- let (tx, rx) = futures_channel::mpsc::unbounded();
-
- let read_future = read.for_each(|msg| async {
-  match msg.unwrap() {
-   Message::Text(t) => {
-    info!("query: {:?} start", t);
-    let json = do_query(&t).await.unwrap();
-    info!("query: {:?} response sent", t);
-
-    tx.unbounded_send(Message::Text(json)).unwrap();
-   }
-   msg => {
-    dbg!(msg);
-   }
-  };
-
-  // let data = msg.unwrap().into_data();
+ tokio::task::spawn(async move {
+  while let Some(msg) = rx.next().await {
+   ws_tx
+    .send(msg)
+    .unwrap_or_else(|e| {
+     error!("websocket send error: {}", e);
+    })
+    .await;
+  }
  });
 
- let receive = rx.map(Ok).forward(write);
- pin_mut!(read_future, receive);
- future::select(read_future, receive).await;
+ while let Some(result) = ws_rx.next().await {
+  let msg = match result {
+   Ok(msg) => msg,
+   Err(e) => {
+    error!("websocket error: {}", e);
+    break;
+   }
+  };
+  if let Ok(t) = msg.to_str() {
+   info!("query: {:?} start", t);
+   let json = do_query(&t).await.unwrap();
+   info!("query: {:?} response sent", t);
+   tx.send(Message::text(json)).unwrap();
+  } else {
+   error!("received non-text message: {:?}", msg);
+  };
+ }
 
- // read_future.await;
+ info!("accept_connection completed")
 }
 
 async fn do_query(query: &str) -> anyhow::Result<String> {

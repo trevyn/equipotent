@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "turbosql")]
 use turbosql::Turbosql;
-
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
