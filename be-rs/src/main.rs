@@ -9,6 +9,7 @@ use warp::ws::{Message, WebSocket};
 use warp::Filter;
 
 mod ddg;
+mod queries;
 
 #[derive(Clap, Debug)]
 struct Opts {
@@ -92,8 +93,10 @@ async fn accept_connection(ws: WebSocket) {
   if let Ok(t) = msg.to_str() {
    info!("query: {:?} start", t);
    let items = ddg::do_query(&t).await.unwrap();
+   info!("query: {:?} scraped {} results", t, items.len());
+   let search_results = queries::scrape_search(&t, items).await.unwrap();
    info!("query: {:?} response sent", t);
-   tx.send(Message::text(serde_json::to_string(&items).unwrap())).unwrap();
+   tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
   } else {
    error!("received non-text message: {:?}", msg);
   };
