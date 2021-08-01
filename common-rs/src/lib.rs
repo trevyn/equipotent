@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
+use turbosql::Turbosql;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
 #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(getter_with_clone))]
-#[cfg_attr(feature = "turbosql", derive(turbosql::Turbosql))]
+#[cfg_attr(feature = "turbosql", derive(Turbosql))]
 #[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq)]
 pub struct ResultItem {
  pub rowid: Option<i64>,
