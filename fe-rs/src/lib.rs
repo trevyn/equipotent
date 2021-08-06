@@ -99,6 +99,14 @@ fn init_ws(ws: &WebSocket) {
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
  console_error_panic_hook::set_once();
+
+ turbosql::set_db_path(std::path::Path::new(":memory:")).unwrap();
+ console_log!(
+  "insert: {:?}",
+  ResultItem { url: Some("myurl".to_string()), ..Default::default() }.insert()
+ );
+ console_log!("select: {:?}", turbosql::select!(Vec<ResultItem>));
+
  let new_ws = WebSocket::new("ws://127.0.0.1:8080/socket")?;
 
  WS.with(|ws| {

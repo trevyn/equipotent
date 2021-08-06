@@ -359,6 +359,7 @@ dependencies = [
  "console_error_panic_hook",
  "js-sys",
  "serde_json",
+ "turbosql",
  "wasm-bindgen",
  "wasm-bindgen-test",
  "web-sys",
@@ -536,8 +537,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcd999463524c52659517fe2cea98493cfe485d10565e7b0fb07dbba7ad2753"
 dependencies = [
  "cfg-if 1.0.0",
+ "js-sys",
  "libc",
  "wasi 0.10.2+wasi-snapshot-preview1",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -771,9 +774,9 @@ checksum = "dd25036021b0de88a0aff6b850051563c6516d0bf53f8638938edbb9de732736"
 
 [[package]]
 name = "js-sys"
-version = "0.3.51"
+version = "0.3.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83bdfbace3a0e81a4253f73b49e960b053e396a11012cbd49b9b74d6a2b67062"
+checksum = "ce791b7ca6638aae45be056e068fc756d871eb3b3b10b8efa62d1c9cec616752"
 dependencies = [
  "wasm-bindgen",
 ]
@@ -799,7 +802,7 @@ checksum = "320cfe77175da3a483efed4bc0adc1968ca050b098ce4f2f1c13a56626128790"
 [[package]]
 name = "libsqlite3-sys"
 version = "0.22.2"
-source = "git+https://github.com/rusqlite/rusqlite?branch=master#e92e8a092437e2cfde924b4d4d4e3876f68a96a8"
+source = "git+https://github.com/trevyn/rusqlite?branch=wasm32-unknown-unknown#64c8fd2d9e7743c058de7aef834bfbcb4ff522fe"
 dependencies = [
  "cc",
  "pkg-config",
@@ -1406,11 +1409,12 @@ dependencies = [
 [[package]]
 name = "rusqlite"
 version = "0.25.3"
-source = "git+https://github.com/rusqlite/rusqlite?branch=master#e92e8a092437e2cfde924b4d4d4e3876f68a96a8"
+source = "git+https://github.com/trevyn/rusqlite?branch=wasm32-unknown-unknown#64c8fd2d9e7743c058de7aef834bfbcb4ff522fe"
 dependencies = [
  "bitflags",
  "fallible-iterator",
  "fallible-streaming-iterator",
+ "getrandom 0.2.3",
  "hashlink",
  "libsqlite3-sys",
  "memchr",
@@ -1969,10 +1973,8 @@ dependencies = [
 [[package]]
 name = "turbosql"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c8adcd513a35cbe647e9bf73971e8a132ba067493662f3d22eea0cca9648a02"
+source = "git+https://github.com/trevyn/turbosql?branch=main#5fad8f2183e5a9792b9bf8737cdc3c7fb977fc1a"
 dependencies = [
- "anyhow",
  "cfg-if 1.0.0",
  "directories-next",
  "itertools",
@@ -1980,6 +1982,7 @@ dependencies = [
  "once_cell",
  "rusqlite",
  "serde",
+ "thiserror",
  "toml",
  "turbosql-impl",
 ]
@@ -1987,8 +1990,7 @@ dependencies = [
 [[package]]
 name = "turbosql-impl"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6dada7a01781bee1155a2b1d7cb71f92ef6c8d972f7fce3fcab121291044314c"
+source = "git+https://github.com/trevyn/turbosql?branch=main#5fad8f2183e5a9792b9bf8737cdc3c7fb977fc1a"
 dependencies = [
  "fs2",
  "indoc",
@@ -2186,8 +2188,8 @@ checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.74"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#814efc918ebd66f704f2e0b5edb47e740b1a69fa"
+version = "0.2.75"
+source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
 dependencies = [
  "cfg-if 1.0.0",
  "serde",
@@ -2197,8 +2199,8 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.74"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#814efc918ebd66f704f2e0b5edb47e740b1a69fa"
+version = "0.2.75"
+source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
 dependencies = [
  "bumpalo",
  "lazy_static",
@@ -2211,9 +2213,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-futures"
-version = "0.4.24"
+version = "0.4.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5fba7978c679d53ce2d0ac80c8c175840feb849a161664365d1287b41f2e67f1"
+checksum = "16646b21c3add8e13fdb8f20172f8a28c3dbf62f45406bcff0233188226cfe0c"
 dependencies = [
  "cfg-if 1.0.0",
  "js-sys",
@@ -2223,8 +2225,8 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.74"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#814efc918ebd66f704f2e0b5edb47e740b1a69fa"
+version = "0.2.75"
+source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -2232,8 +2234,8 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.74"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#814efc918ebd66f704f2e0b5edb47e740b1a69fa"
+version = "0.2.75"
+source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2244,14 +2246,14 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.74"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#814efc918ebd66f704f2e0b5edb47e740b1a69fa"
+version = "0.2.75"
+source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
 
 [[package]]
 name = "wasm-bindgen-test"
-version = "0.3.24"
+version = "0.3.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8cab416a9b970464c2882ed92d55b0c33046b08e0bdc9d59b3b718acd4e1bae8"
+checksum = "ce783b6c3854292723f498b7bfcf65a782a320b6f1cb3012d08dfbc603fa62f5"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -2263,9 +2265,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-macro"
-version = "0.3.24"
+version = "0.3.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd4543fc6cf3541ef0d98bf720104cc6bd856d7eba449fd2aa365ef4fed0e782"
+checksum = "3859815cf8435b92f3a34381bef950daffc1403bbb77ef99e35422a7b0abb194"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2273,9 +2275,9 @@ dependencies = [
 
 [[package]]
 name = "web-sys"
-version = "0.3.51"
+version = "0.3.52"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e828417b379f3df7111d3a2a9e5753706cae29c41f7c4029ee9fd77f3e09e582"
+checksum = "01c70a82d842c9979078c772d4a1344685045f1a5628f677c2b2eab4dd7d2696"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
