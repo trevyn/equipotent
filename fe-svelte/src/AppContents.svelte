@@ -11,6 +11,16 @@
 
  let items = [];
  let query = "";
+ let node;
+
+ import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup";
+
+ let view;
+
+ $: view = new EditorView({
+  state: EditorState.create({ extensions: [basicSetup] }),
+  parent: node,
+ });
 
  set_items = (json) => {
   items = JSON.parse(json);
@@ -30,6 +40,8 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
+      <div bind:this={node} />
+
       <!-- svelte-ignore a11y-autofocus -->
       <input
        class="p-5 text-5xl w-full"

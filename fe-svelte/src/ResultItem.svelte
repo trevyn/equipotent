@@ -16,7 +16,7 @@
 
 <div class="border border-gray-800 p-4 rounded-xl mt-4">
  <p class="font-bold text-2xl text-gray-300">
-  <a rel="nofollow" target="_blank" href={item.url}
+  <a rel="noopener noreferrer" target="_blank" href={item.url}
    >{@html highlight(item.title)}</a
   >
  </p>
