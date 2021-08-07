@@ -35,9 +35,15 @@
        class="p-5 text-5xl w-full"
        autofocus
        bind:value={query}
-       on:keydown={(e) => {
+       on:keyup={(e) => {
         if (e.keyCode == 13) {
-         wasm.set_search(query);
+         wasm.send_command(
+          wasm.Command.new(wasm.CommandType.SearchScrape, query)
+         );
+        } else {
+         wasm.send_command(
+          wasm.Command.new(wasm.CommandType.SearchInstant, query)
+         );
         }
        }}
       />

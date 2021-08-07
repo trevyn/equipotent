@@ -29,6 +29,27 @@ pub struct SearchQueryResultItem {
  pub rank: f64,
 }
 
+#[wasm_bindgen]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub enum CommandType {
+ SearchScrape,
+ SearchInstant,
+}
+
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Command {
+ pub command: CommandType,
+ pub param: String,
+}
+
+#[wasm_bindgen]
+impl Command {
+ pub fn new(command: CommandType, param: String) -> Command {
+  Command { command, param }
+ }
+}
+
 #[derive(Turbosql, Clone, Default, Debug)]
 pub struct HostAffection {
  pub rowid: Option<i64>,

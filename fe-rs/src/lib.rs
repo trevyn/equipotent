@@ -24,11 +24,11 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn set_search(query: String) {
- console_log!("set_search: {:?}", query);
+pub fn send_command(command: Command) {
+ console_log!("send_command: {:?}", command);
  WS.with(|ws| {
   if let Some(ws) = ws.borrow().as_ref() {
-   if let Err(e) = ws.send_with_str(&query) {
+   if let Err(e) = ws.send_with_str(&serde_json::to_string(&command).unwrap()) {
     console_log!("websocket send err: {:?}", e);
    }
   }

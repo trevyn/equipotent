@@ -1,6 +1,6 @@
 // #![allow(unused_imports)]
 use clap::Clap;
-// use common_rs::*;
+use common_rs::*;
 use futures::{SinkExt, StreamExt, TryFutureExt};
 use log::{debug, error, info, trace, warn};
 use tokio::sync::mpsc;
@@ -91,12 +91,23 @@ async fn accept_connection(ws: WebSocket) {
    }
   };
   if let Ok(t) = msg.to_str() {
-   info!("query: {:?} start", t);
-   let items = ddg::do_query(t).await.unwrap();
-   info!("query: {:?} scraped {} results", t, items.len());
-   let search_results = queries::search_scrape(t, items).await.unwrap();
-   info!("query: {:?} response sent", t);
-   tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+   let command: Command = serde_json::from_str(t).unwrap();
+   match command {
+    Command { command: CommandType::SearchScrape, param: query } => {
+     info!("SearchScrape: {:?} start", query);
+     let items = ddg::do_query(&query).await.unwrap();
+     info!("SearchScrape: {:?} scraped {} results", query, items.len());
+     let search_results = queries::search_scrape(&query, items).await.unwrap();
+     info!("SearchScrape: {:?} response sent", query);
+     tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+    }
+    Command { command: CommandType::SearchInstant, param: query } => {
+     info!("SearchInstant: {:?}", query);
+     let search_results = queries::search_instant(query.clone()).await.unwrap();
+     info!("SearchInstant: {:?} response sent", query);
+     tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+    }
+   }
   } else {
    error!("received non-text message: {:?}", msg);
   };
