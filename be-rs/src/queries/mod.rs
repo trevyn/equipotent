@@ -1,6 +1,8 @@
+mod openai;
 mod search_instant;
 mod search_scrape;
 
+pub use openai::openai;
 pub use search_instant::search_instant;
 pub use search_scrape::search_scrape;
 

@@ -37,9 +37,7 @@
        bind:value={query}
        on:keyup={(e) => {
         if (e.keyCode == 13) {
-         wasm.send_command(
-          wasm.Command.new(wasm.CommandType.SearchScrape, query)
-         );
+         wasm.send_command(wasm.Command.new(wasm.CommandType.OpenAi, query));
         } else {
          wasm.send_command(
           wasm.Command.new(wasm.CommandType.SearchInstant, query)

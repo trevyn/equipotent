@@ -31,8 +31,10 @@ async fn main() -> anyhow::Result<()> {
  pretty_env_logger::init_timed();
  let opts = Opts::parse();
 
- info!("running initial query to pool connection...");
- ddg::do_query("hello").await.unwrap();
+ tokio::task::spawn(async {
+  info!("running initial query to pool connection...");
+  ddg::do_query("hello").await.unwrap();
+ });
 
  warn!("warn enabled");
  info!("info enabled");
@@ -106,6 +108,12 @@ async fn accept_connection(ws: WebSocket) {
      let search_results = queries::search_instant(query.clone()).await.unwrap();
      info!("SearchInstant: {:?} response sent", query);
      tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+    }
+    Command { command: CommandType::OpenAi, param: query } => {
+     info!("OpenAI: {:?}", query);
+     let _search_results = queries::openai(query.clone()).await.unwrap();
+     // info!("SearchInstant: {:?} response sent", query);
+     // tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
     }
    }
   } else {

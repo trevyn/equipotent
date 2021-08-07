@@ -34,6 +34,7 @@ pub struct SearchQueryResultItem {
 pub enum CommandType {
  SearchScrape,
  SearchInstant,
+ OpenAi,
 }
 
 #[wasm_bindgen(getter_with_clone)]
