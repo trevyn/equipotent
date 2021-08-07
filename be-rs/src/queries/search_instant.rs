@@ -19,9 +19,9 @@ pub async fn search_instant(query: String) -> anyhow::Result<Vec<SearchQueryResu
 
   FROM (
    SELECT
-    highlight(resultitem_fts, 1, '<span class="search-highlight-url">', '</span>') AS search_highlighted_url,
-    highlight(resultitem_fts, 2, '<span class="search-highlight">', '</span>') AS title,
-    highlight(resultitem_fts, 3, '<span class="search-highlight">', '</span>') AS snippet,
+    highlight(resultitem_fts, 1, 'EQUIPOTENTHIGHLIGHTOPEN', 'EQUIPOTENTHIGHLIGHTCLOSE') AS search_highlighted_url,
+    highlight(resultitem_fts, 2, 'EQUIPOTENTHIGHLIGHTOPEN', 'EQUIPOTENTHIGHLIGHTCLOSE') AS title,
+    highlight(resultitem_fts, 3, 'EQUIPOTENTHIGHLIGHTOPEN', 'EQUIPOTENTHIGHLIGHTCLOSE') AS snippet,
     url,
     host,
     rank
