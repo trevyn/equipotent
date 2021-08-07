@@ -48,7 +48,7 @@ fn init_ws(ws: &WebSocket) {
    let len = array.byte_length() as usize;
    console_log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
    cloned_ws.set_binary_type(web_sys::BinaryType::Blob);
-   match cloned_ws.send_with_u8_array(&vec![5, 6, 7, 8]) {
+   match cloned_ws.send_with_u8_array(&[5, 6, 7, 8]) {
     Ok(_) => console_log!("binary message successfully sent"),
     Err(err) => console_log!("error sending message: {:?}", err),
    }
