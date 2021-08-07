@@ -9,7 +9,7 @@ version = "0.1.0"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-common-rs = {path = "../common-rs", features = ["wasm-bindgen", "turbosql"]}
+common-rs = {path = "../common-rs"}
 console_error_panic_hook = "0.1"
 js-sys = "0.3"
 serde_json = "1"

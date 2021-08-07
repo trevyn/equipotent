@@ -9,7 +9,7 @@ version = "0.1.0"
 anyhow = "1"
 bincode = "1"
 clap = "=3.0.0-beta.2"
-common-rs = {path = "../common-rs", features = ["turbosql"]}
+common-rs = {path = "../common-rs"}
 futures = "0.3"
 html-escape = "0.2"
 log = "0.4"

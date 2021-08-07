@@ -1,12 +1,9 @@
 use serde::{Deserialize, Serialize};
-#[cfg(feature = "turbosql")]
 use turbosql::Turbosql;
-#[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
-#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(getter_with_clone))]
-#[cfg_attr(feature = "turbosql", derive(Turbosql))]
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq)]
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Turbosql, Serialize, Deserialize, Clone, Default, Debug, PartialEq)]
 pub struct ResultItem {
  pub rowid: Option<i64>,
  pub url: Option<String>,
@@ -19,7 +16,7 @@ pub struct ResultItem {
  pub last_scraped: Option<f64>,
 }
 
-#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(getter_with_clone))]
+#[wasm_bindgen(getter_with_clone)]
 #[derive(Serialize, Deserialize, Clone, Default, Debug)]
 pub struct SearchQueryResultItem {
  pub search_highlighted_url: String,
@@ -32,7 +29,6 @@ pub struct SearchQueryResultItem {
  pub rank: f64,
 }
 
-#[cfg(feature = "turbosql")]
 #[derive(Turbosql, Clone, Default, Debug)]
 pub struct HostAffection {
  pub rowid: Option<i64>,
@@ -40,7 +36,6 @@ pub struct HostAffection {
  pub affection: Option<i32>,
 }
 
-#[cfg(feature = "turbosql")]
 #[derive(Turbosql, Clone, Default, Debug)]
 pub struct Bookmark {
  pub rowid: Option<i64>,
