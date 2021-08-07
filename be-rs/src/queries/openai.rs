@@ -6,6 +6,12 @@ pub async fn openai(query: String) -> anyhow::Result<Vec<SearchQueryResultItem>>
  let request = serde_json::to_string(&serde_json::json!({
      "prompt": query,
      "max_tokens": 100,
+     "stream": true,
+     "logprobs": 100,
+     "temperature": 0.9,
+     "presence_penalty": 0.3,
+     "frequency_penalty": 0.3,
+     "logit_bias": {"50256": -100}
  }))?;
 
  let mut stream = reqwest::Client::new()
