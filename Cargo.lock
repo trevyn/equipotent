@@ -802,7 +802,7 @@ checksum = "320cfe77175da3a483efed4bc0adc1968ca050b098ce4f2f1c13a56626128790"
 [[package]]
 name = "libsqlite3-sys"
 version = "0.22.2"
-source = "git+https://github.com/trevyn/rusqlite?branch=wasm32-unknown-unknown#64c8fd2d9e7743c058de7aef834bfbcb4ff522fe"
+source = "git+https://github.com/trevyn/rusqlite?branch=wasm32-unknown-unknown#24b1454fe8e60cbd906438ccf89a51f1d94c6b26"
 dependencies = [
  "cc",
  "pkg-config",
@@ -1314,9 +1314,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.9"
+version = "0.2.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ab49abadf3f9e1c4bc499e8845e152ad87d2ad2d30371841171169e9d75feee"
+checksum = "8383f39639269cde97d255a32bdb68c047337295414940c68bdd30c2e13203ff"
 dependencies = [
  "bitflags",
 ]
@@ -1409,7 +1409,7 @@ dependencies = [
 [[package]]
 name = "rusqlite"
 version = "0.25.3"
-source = "git+https://github.com/trevyn/rusqlite?branch=wasm32-unknown-unknown#64c8fd2d9e7743c058de7aef834bfbcb4ff522fe"
+source = "git+https://github.com/trevyn/rusqlite?branch=wasm32-unknown-unknown#24b1454fe8e60cbd906438ccf89a51f1d94c6b26"
 dependencies = [
  "bitflags",
  "fallible-iterator",
@@ -1687,9 +1687,9 @@ checksum = "729a25c17d72b06c68cb47955d44fda88ad2d3e7d77e025663fdd69b93dd71a1"
 
 [[package]]
 name = "slab"
-version = "0.4.3"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f173ac3d1a7e3b28003f40de0b5ce7fe2710f9b9dc3fc38664cebee46b3b6527"
+checksum = "c307a32c1c5c437f38c7fd45d753050587732ba8628319fbdf12a7e289ccc590"
 
 [[package]]
 name = "smallvec"
@@ -2189,7 +2189,8 @@ checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
 [[package]]
 name = "wasm-bindgen"
 version = "0.2.75"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b608ecc8f4198fe8680e2ed18eccab5f0cd4caaf3d83516fa5fb2e927fda2586"
 dependencies = [
  "cfg-if 1.0.0",
  "serde",
@@ -2200,7 +2201,8 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-backend"
 version = "0.2.75"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "580aa3a91a63d23aac5b6b267e2d13cb4f363e31dce6c352fca4752ae12e479f"
 dependencies = [
  "bumpalo",
  "lazy_static",
@@ -2226,7 +2228,8 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-macro"
 version = "0.2.75"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "171ebf0ed9e1458810dfcb31f2e766ad6b3a89dbda42d8901f2b268277e5f09c"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -2235,7 +2238,8 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-macro-support"
 version = "0.2.75"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c2657dd393f03aa2a659c25c6ae18a13a4048cebd220e147933ea837efc589f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2247,7 +2251,8 @@ dependencies = [
 [[package]]
 name = "wasm-bindgen-shared"
 version = "0.2.75"
-source = "git+https://github.com/rustwasm/wasm-bindgen?branch=master#e104d1695a89de8c8050b7abaedf5ea9330f3cd8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2e0c4a743a309662d45f4ede961d7afa4ba4131a59a639f29b0069c3798bbcc2"
 
 [[package]]
 name = "wasm-bindgen-test"
