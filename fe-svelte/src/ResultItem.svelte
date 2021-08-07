@@ -16,7 +16,9 @@
 
 <div class="border border-gray-800 p-4 rounded-xl mt-4">
  <p class="font-bold text-2xl text-gray-300">
-  {@html highlight(item.title)}
+  <a rel="nofollow" target="_blank" href={item.url}
+   >{@html highlight(item.title)}</a
+  >
  </p>
  <p class="text-gray-500 font-bold">
   {@html highlight(item.search_highlighted_url)}
