@@ -10,7 +10,6 @@ lol_html = {git = "https://github.com/cloudflare/lol-html", branch = "master"}
 rusqlite = {git = "https://github.com/trevyn/rusqlite", branch = "wasm32-unknown-unknown"}
 turbosql = {git = "https://github.com/trevyn/turbosql", branch = "main"}
 warp = {git = "https://github.com/seanmonstar/warp", branch = "master"}
-# wasm-bindgen = {git = "https://github.com/rustwasm/wasm-bindgen", branch = "master"}
 
 [profile.release]
 codegen-units = 1 # Reduce number of codegen units to increase optimizations.

@@ -44,7 +44,7 @@ async fn main() -> anyhow::Result<()> {
  let routes = warp::path("socket")
   .and(warp::ws())
   .map(|ws: warp::ws::Ws| ws.on_upgrade(accept_connection))
-  .with(warp::log("routes"));
+  .with(warp::log("be_rs::routes"));
 
  match (opts.key_path, opts.cert_path) {
   (Some(key_path), Some(cert_path)) => {
@@ -94,7 +94,7 @@ async fn accept_connection(ws: WebSocket) {
    info!("query: {:?} start", t);
    let items = ddg::do_query(t).await.unwrap();
    info!("query: {:?} scraped {} results", t, items.len());
-   let search_results = queries::scrape_search(t, items).await.unwrap();
+   let search_results = queries::search_scrape(t, items).await.unwrap();
    info!("query: {:?} response sent", t);
    tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
   } else {
