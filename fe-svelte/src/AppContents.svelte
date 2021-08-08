@@ -8,18 +8,20 @@
 <script lang="ts">
  import * as wasm from "../../fe-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
+ import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup";
+ import { oneDark } from "@codemirror/theme-one-dark";
 
  let items = [];
  let query = "";
- let node;
-
- import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup";
+ let codemirror_node;
 
  let view;
 
  $: view = new EditorView({
-  state: EditorState.create({ extensions: [basicSetup] }),
-  parent: node,
+  state: EditorState.create({
+   extensions: [basicSetup, oneDark, EditorView.lineWrapping],
+  }),
+  parent: codemirror_node,
  });
 
  set_items = (json) => {
@@ -40,7 +42,7 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <div bind:this={node} />
+      <div class="text-5xl max-w-full" bind:this={codemirror_node} />
 
       <!-- svelte-ignore a11y-autofocus -->
       <input
