@@ -31,10 +31,9 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <CodeMirror />
+      <CodeMirror on:docChanged={(e) => console.log(e.detail)} />
       <hr />
       <CodeMirror />
-
       <!-- svelte-ignore a11y-autofocus -->
       <!-- <input
        class="p-5 text-5xl w-full"

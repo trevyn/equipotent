@@ -1,15 +1,29 @@
 <script lang="ts">
+ import { onMount, createEventDispatcher } from "svelte";
  import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup";
  import { oneDark } from "@codemirror/theme-one-dark";
+
+ const dispatch = createEventDispatcher();
 
  let node;
  let view;
 
- $: view = new EditorView({
-  state: EditorState.create({
-   extensions: [basicSetup, oneDark, EditorView.lineWrapping],
-  }),
-  parent: node,
+ onMount(async () => {
+  view = new EditorView({
+   state: EditorState.create({
+    extensions: [
+     basicSetup,
+     oneDark,
+     EditorView.lineWrapping,
+     EditorView.updateListener.of((update) => {
+      if (update.docChanged) {
+       dispatch("docChanged", view.state.doc.toString());
+      }
+     }),
+    ],
+   }),
+   parent: node,
+  });
  });
 </script>
 
