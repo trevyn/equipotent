@@ -20,6 +20,9 @@ migrations_append_only = [
   'CREATE TABLE bookmark (rowid INTEGER PRIMARY KEY)',
   'ALTER TABLE bookmark ADD COLUMN url TEXT',
   'ALTER TABLE bookmark ADD COLUMN timestamp REAL',
+  'CREATE TABLE card (rowid INTEGER PRIMARY KEY)',
+  'ALTER TABLE card ADD COLUMN question TEXT',
+  'ALTER TABLE card ADD COLUMN answer TEXT',
 ]
 output_generated_schema_for_your_information_do_not_edit = '''
   CREATE TABLE 'resultitem_fts_config'(
@@ -59,6 +62,11 @@ output_generated_schema_for_your_information_do_not_edit = '''
     rowid INTEGER PRIMARY KEY,
     url TEXT,
     timestamp REAL
+  )
+  CREATE TABLE card (
+    rowid INTEGER PRIMARY KEY,
+    question TEXT,
+    answer TEXT
   )
   CREATE TABLE hostaffection (
     rowid INTEGER PRIMARY KEY,
@@ -101,6 +109,24 @@ sql_type = 'TEXT'
 name = 'timestamp'
 rust_type = 'Option < f64 >'
 sql_type = 'REAL'
+
+[output_generated_tables_do_not_edit.card]
+name = 'card'
+
+[[output_generated_tables_do_not_edit.card.columns]]
+name = 'rowid'
+rust_type = 'Option < i64 >'
+sql_type = 'INTEGER PRIMARY KEY'
+
+[[output_generated_tables_do_not_edit.card.columns]]
+name = 'question'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
+
+[[output_generated_tables_do_not_edit.card.columns]]
+name = 'answer'
+rust_type = 'Option < String >'
+sql_type = 'TEXT'
 
 [output_generated_tables_do_not_edit.hostaffection]
 name = 'hostaffection'

@@ -51,6 +51,14 @@ impl Command {
  }
 }
 
+#[wasm_bindgen(getter_with_clone)]
+#[derive(Turbosql, Serialize, Deserialize, Clone, Debug)]
+pub struct Card {
+ pub rowid: Option<i64>,
+ pub question: Option<String>,
+ pub answer: Option<String>,
+}
+
 #[derive(Turbosql, Clone, Default, Debug)]
 pub struct HostAffection {
  pub rowid: Option<i64>,
