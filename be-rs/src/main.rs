@@ -1,4 +1,5 @@
 // #![allow(unused_imports)]
+use anyhow::Context;
 use clap::Clap;
 use common_rs::*;
 use futures::{SinkExt, StreamExt, TryFutureExt};
@@ -10,6 +11,10 @@ use warp::Filter;
 
 mod ddg;
 mod queries;
+
+#[derive(rust_embed::RustEmbed)]
+#[folder = "../fe-svelte/build"]
+struct Asset;
 
 #[derive(Clap, Debug)]
 struct Opts {
@@ -43,9 +48,29 @@ async fn main() -> anyhow::Result<()> {
 
  // let routes = warp::any().map(|| Ok(warp::reply::html("hello"))).with(warp::log("routes"));
 
+ // socket ----------------
  let routes = warp::path("socket")
   .and(warp::ws())
   .map(|ws: warp::ws::Ws| ws.on_upgrade(accept_connection))
+  // asset -----------------
+  .or(warp::any().and(warp::path::full()).map(|path: warp::path::FullPath| {
+   match (|| -> anyhow::Result<_> {
+    let path = match path.as_str() {
+     "/" => "index.html",
+     "/index_bg.wasm" => "dist/fe-rs/index_bg.wasm",
+     p => p.trim_start_matches('/'),
+    };
+    let data = match path {
+     "favicon.ico" => Vec::new(),
+     p => Asset::get(p).context("Expected Asset")?.data.into_owned(),
+    };
+    let mime = mime_guess::from_path(path).first().unwrap();
+    Ok(warp::reply::with_header(data, "content-type", mime.essence_str()))
+   })() {
+    Ok(body) => body,
+    Err(e) => panic!("{}", e), //warp::reply::html("error!".to_string()),
+   }
+  }))
   .with(warp::log("be_rs::routes"));
 
  match (opts.key_path, opts.cert_path) {

@@ -63,6 +63,7 @@ dependencies = [
  "html-escape",
  "log",
  "lol_html",
+ "mime_guess",
  "pretty_env_logger",
  "reqwest",
  "rust-embed",
