@@ -8,21 +8,10 @@
 <script lang="ts">
  import * as wasm from "../../fe-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
- import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup";
- import { oneDark } from "@codemirror/theme-one-dark";
+ import CodeMirror from "./CodeMirror.svelte";
 
  let items = [];
  let query = "";
- let codemirror_node;
-
- let view;
-
- $: view = new EditorView({
-  state: EditorState.create({
-   extensions: [basicSetup, oneDark, EditorView.lineWrapping],
-  }),
-  parent: codemirror_node,
- });
 
  set_items = (json) => {
   items = JSON.parse(json);
@@ -32,7 +21,7 @@
 </script>
 
 <div class="min-h-screen bg-gray-900 py-6 flex flex-col justify-center">
- <div class="relative p-5 sm:mx-auto">
+ <div class="relative p-5 sm:mx-auto w-full">
   <div
    class="absolute -inset-10 bg-gradient-to-r from-pink-900 to-sky-700 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
   />
@@ -42,10 +31,12 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <div class="text-5xl max-w-full" bind:this={codemirror_node} />
+      <CodeMirror />
+      <hr />
+      <CodeMirror />
 
       <!-- svelte-ignore a11y-autofocus -->
-      <input
+      <!-- <input
        class="p-5 text-5xl w-full"
        autofocus
        bind:value={query}
@@ -58,13 +49,13 @@
          );
         }
        }}
-      />
-      <p>
-       {#each items as item (item)}
-        <!-- (item.rowid) -->
-        <ResultItem {item} />
-       {/each}
-      </p>
+      /> -->
+      <!-- <p> -->
+      {#each items as item (item)}
+       <!-- (item.rowid) -->
+       <ResultItem {item} />
+      {/each}
+      <!-- </p> -->
      </div>
     </div>
    </div>
