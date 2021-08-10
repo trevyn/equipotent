@@ -52,11 +52,28 @@ impl Command {
 }
 
 #[wasm_bindgen(getter_with_clone)]
-#[derive(Turbosql, Serialize, Deserialize, Clone, Debug)]
+#[derive(Turbosql, Serialize, Deserialize, Clone, Debug, Default)]
 pub struct Card {
  pub rowid: Option<i64>,
  pub question: Option<String>,
  pub answer: Option<String>,
+}
+
+#[wasm_bindgen]
+impl Card {
+ // pub fn new() -> Card {
+ //  Card { rowid: None, question: Some("q".to_string()), answer: Some("a".to_string()) }
+ // }
+ pub async fn get(rowid: i64) -> Card {
+  Card { rowid: Some(rowid), question: Some("imaq".to_string()), answer: Some("imaa".to_string()) }
+ }
+ // pub fn save(&self) {}
+ // pub fn delete(rowid: i64) {
+ //  let _ = rowid;
+ // }
+ // pub fn list() -> Vec<i64> {
+ //  Vec::new()
+ // }
 }
 
 #[derive(Turbosql, Clone, Default, Debug)]

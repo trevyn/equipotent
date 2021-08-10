@@ -17,6 +17,13 @@
   items = JSON.parse(json);
  };
 
+ async function doget() {
+  const result = await wasm.Card.get(BigInt(2));
+  console.log(result);
+ }
+
+ doget();
+
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
 

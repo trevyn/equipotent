@@ -184,6 +184,7 @@ dependencies = [
  "serde",
  "turbosql",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
 ]
 
 [[package]]
