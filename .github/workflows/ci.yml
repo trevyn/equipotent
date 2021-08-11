@@ -48,3 +48,6 @@ jobs:
 
       - run: npm run svelte-check
         working-directory: 'fe-svelte'
+
+      - run: cargo build
+        working-directory: 'be-rs'

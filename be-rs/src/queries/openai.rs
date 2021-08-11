@@ -16,7 +16,7 @@ pub async fn openai(query: String) -> anyhow::Result<Vec<SearchQueryResultItem>>
 
  let mut stream = reqwest::Client::new()
   .post("https://api.openai.com/v1/engines/ada/completions")
-  .header(header::AUTHORIZATION, concat!("Bearer ", include_str!("../../../credentials/openai")))
+  //   .header(header::AUTHORIZATION, concat!("Bearer ", include_str!("../../../credentials/openai")))
   .header(header::CONTENT_TYPE, "application/json")
   .body(request)
   .send()
