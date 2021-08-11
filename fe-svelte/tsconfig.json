@@ -1,6 +1,5 @@
 {
- "include": ["./../"],
- "exclude": ["node_modules/*"],
+ "include": ["src/**/*"],
  "compilerOptions": {
   "baseUrl": "./",
   "target": "esnext",
