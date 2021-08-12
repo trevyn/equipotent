@@ -12,7 +12,7 @@ export default {
   [
    "snowpack-plugin-wasm-pack",
    {
-    projectPath: "../fe-rs",
+    projectPath: "../common-rs",
     // profile: "release",
    },
   ],

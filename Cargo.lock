@@ -181,7 +181,10 @@ dependencies = [
 name = "common-rs"
 version = "0.1.0"
 dependencies = [
+ "console_error_panic_hook",
+ "js-sys",
  "serde",
+ "serde_json",
  "turbosql",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -353,20 +356,6 @@ name = "fallible-streaming-iterator"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
-
-[[package]]
-name = "fe-rs"
-version = "0.1.0"
-dependencies = [
- "common-rs",
- "console_error_panic_hook",
- "js-sys",
- "serde_json",
- "turbosql",
- "wasm-bindgen",
- "wasm-bindgen-test",
- "web-sys",
-]
 
 [[package]]
 name = "fnv"
@@ -2256,30 +2245,6 @@ name = "wasm-bindgen-shared"
 version = "0.2.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2e0c4a743a309662d45f4ede961d7afa4ba4131a59a639f29b0069c3798bbcc2"
-
-[[package]]
-name = "wasm-bindgen-test"
-version = "0.3.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce783b6c3854292723f498b7bfcf65a782a320b6f1cb3012d08dfbc603fa62f5"
-dependencies = [
- "console_error_panic_hook",
- "js-sys",
- "scoped-tls",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "wasm-bindgen-test-macro",
-]
-
-[[package]]
-name = "wasm-bindgen-test-macro"
-version = "0.3.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3859815cf8435b92f3a34381bef950daffc1403bbb77ef99e35422a7b0abb194"
-dependencies = [
- "proc-macro2",
- "quote",
-]
 
 [[package]]
 name = "web-sys"

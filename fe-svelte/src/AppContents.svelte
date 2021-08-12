@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
- import * as wasm from "../../fe-rs/pkg";
+ import * as wasm from "../../common-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
  import CodeMirror from "./CodeMirror.svelte";
 
@@ -22,7 +22,7 @@
   console.log(result);
  }
 
- doget();
+ setTimeout(() => doget(), 1000);
 
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>

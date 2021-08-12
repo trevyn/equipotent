@@ -1,12 +1,9 @@
 use serde::{Deserialize, Serialize};
-use std::cell::RefCell;
 use turbosql::Turbosql;
 use wasm_bindgen::prelude::*;
 
-thread_local! {
- #[cfg(target_arch = "wasm32")]
- pub static WS: RefCell<Option<web_sys::WebSocket>> = RefCell::new(None);
-}
+#[cfg(target_arch = "wasm32")]
+mod fe;
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Turbosql, Serialize, Deserialize, Clone, Default, Debug, PartialEq)]
@@ -35,26 +32,12 @@ pub struct SearchQueryResultItem {
  pub rank: f64,
 }
 
-#[wasm_bindgen]
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub enum CommandType {
- SearchScrape,
- SearchInstant,
- OpenAi,
-}
-
-#[wasm_bindgen(getter_with_clone)]
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct Command {
- pub command: CommandType,
- pub param: String,
-}
-
-#[wasm_bindgen]
-impl Command {
- pub fn new(command: CommandType, param: String) -> Command {
-  Command { command, param }
- }
+pub enum Command {
+ SearchScrape { query: String },
+ SearchInstant { query: String },
+ OpenAi { query: String },
+ GetCard { rowid: i64 },
 }
 
 #[wasm_bindgen(getter_with_clone)]
@@ -63,23 +46,6 @@ pub struct Card {
  pub rowid: Option<i64>,
  pub question: Option<String>,
  pub answer: Option<String>,
-}
-
-#[wasm_bindgen]
-impl Card {
- // pub fn new() -> Card {
- //  Card { rowid: None, question: Some("q".to_string()), answer: Some("a".to_string()) }
- // }
- pub async fn get(rowid: i64) -> Card {
-  Card { rowid: Some(rowid), question: Some("imaq".to_string()), answer: Some("imaa".to_string()) }
- }
- // pub fn save(&self) {}
- // pub fn delete(rowid: i64) {
- //  let _ = rowid;
- // }
- // pub fn list() -> Vec<i64> {
- //  Vec::new()
- // }
 }
 
 #[derive(Turbosql, Clone, Default, Debug)]

@@ -1,5 +1,5 @@
 <script lang="ts">
- import * as wasm from "../../fe-rs/pkg";
+ import * as wasm from "../../common-rs/pkg";
  import { encodeHTML } from "entities";
 
  export let item: wasm.SearchQueryResultItem;

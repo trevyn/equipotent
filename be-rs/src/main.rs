@@ -57,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
    match (|| -> anyhow::Result<_> {
     let path = match path.as_str() {
      "/" => "index.html",
-     "/index_bg.wasm" => "dist/fe-rs/index_bg.wasm",
+     "/index_bg.wasm" => "dist/common-rs/index_bg.wasm",
      p => p.trim_start_matches('/'),
     };
     let data = match path {
@@ -119,28 +119,29 @@ async fn accept_connection(ws: WebSocket) {
   };
   if let Ok(t) = msg.to_str() {
    let command: Command = serde_json::from_str(t).unwrap();
-   match command {
-    Command { command: CommandType::SearchScrape, param: query } => {
-     info!("SearchScrape: {:?} start", query);
-     let items = ddg::do_query(&query).await.unwrap();
-     info!("SearchScrape: {:?} scraped {} results", query, items.len());
-     let search_results = queries::search_scrape(&query, items).await.unwrap();
-     info!("SearchScrape: {:?} response sent", query);
-     tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
-    }
-    Command { command: CommandType::SearchInstant, param: query } => {
-     info!("SearchInstant: {:?}", query);
-     let search_results = queries::search_instant(query.clone()).await.unwrap();
-     info!("SearchInstant: {:?} response sent", query);
-     tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
-    }
-    Command { command: CommandType::OpenAi, param: query } => {
-     info!("OpenAI: {:?}", query);
-     let _search_results = queries::openai(query.clone()).await.unwrap();
-     // info!("SearchInstant: {:?} response sent", query);
-     // tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
-    }
-   }
+   dbg!(command);
+  //  match command {
+  //   Command { command: CommandType::SearchScrape, param: query } => {
+  //    info!("SearchScrape: {:?} start", query);
+  //    let items = ddg::do_query(&query).await.unwrap();
+  //    info!("SearchScrape: {:?} scraped {} results", query, items.len());
+  //    let search_results = queries::search_scrape(&query, items).await.unwrap();
+  //    info!("SearchScrape: {:?} response sent", query);
+  //    tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+  //   }
+  //   Command { command: CommandType::SearchInstant, param: query } => {
+  //    info!("SearchInstant: {:?}", query);
+  //    let search_results = queries::search_instant(query.clone()).await.unwrap();
+  //    info!("SearchInstant: {:?} response sent", query);
+  //    tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+  //   }
+  //   Command { command: CommandType::OpenAi, param: query } => {
+  //    info!("OpenAI: {:?}", query);
+  //    let _search_results = queries::openai(query.clone()).await.unwrap();
+  //    // info!("SearchInstant: {:?} response sent", query);
+  //    // tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
+  //   }
+  //  }
   } else {
    error!("received non-text message: {:?}", msg);
   };

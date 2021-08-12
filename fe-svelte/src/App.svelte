@@ -1,5 +1,5 @@
 <script lang="ts">
- import initwasm from "../../fe-rs/pkg";
+ import initwasm from "../../common-rs/pkg";
  import AppContents from "./AppContents.svelte";
 </script>
 
