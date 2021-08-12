@@ -2,7 +2,7 @@
  "include": ["src/**/*"],
  "compilerOptions": {
   "baseUrl": "./",
-  "target": "es2020",
+  "target": "es2021",
   "types": ["svelte"],
   "moduleResolution": "node"
  }
