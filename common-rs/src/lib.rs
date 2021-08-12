@@ -1,6 +1,12 @@
 use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
 use turbosql::Turbosql;
 use wasm_bindgen::prelude::*;
+
+thread_local! {
+ #[cfg(target_arch = "wasm32")]
+ pub static WS: RefCell<Option<web_sys::WebSocket>> = RefCell::new(None);
+}
 
 #[wasm_bindgen(getter_with_clone)]
 #[derive(Turbosql, Serialize, Deserialize, Clone, Default, Debug, PartialEq)]

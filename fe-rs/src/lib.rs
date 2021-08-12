@@ -1,12 +1,7 @@
 pub use common_rs::*;
-use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
-
-thread_local! {
- static WS: RefCell<Option<WebSocket>> = RefCell::new(None);
-}
 
 macro_rules! console_log {
  ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
