@@ -1,9 +1,9 @@
 // #![allow(unused_imports)]
 use anyhow::Context;
 use clap::Clap;
-use common_rs::*;
 use futures::{SinkExt, StreamExt, TryFutureExt};
 use log::{debug, error, info, trace, warn};
+use middle_rs::*;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use warp::ws::{Message, WebSocket};
@@ -57,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
    match (|| -> anyhow::Result<_> {
     let path = match path.as_str() {
      "/" => "index.html",
-     "/index_bg.wasm" => "dist/common-rs/index_bg.wasm",
+     "/index_bg.wasm" => "dist/middle-rs/index_bg.wasm",
      p => p.trim_start_matches('/'),
     };
     let data = match path {

@@ -1,5 +1,5 @@
-use common_rs::*;
 use futures::StreamExt;
+use middle_rs::*;
 use reqwest::header;
 
 pub async fn openai(query: String) -> anyhow::Result<Vec<SearchQueryResultItem>> {

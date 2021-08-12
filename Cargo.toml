@@ -1,6 +1,6 @@
 [workspace]
 members = [
-  "common-rs",
+  "middle-rs",
   "be-rs",
 ]
 

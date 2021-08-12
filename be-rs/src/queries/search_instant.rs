@@ -1,4 +1,4 @@
-use common_rs::*;
+use middle_rs::*;
 use turbosql::select;
 
 pub async fn search_instant(query: String) -> anyhow::Result<Vec<SearchQueryResultItem>> {

@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
- import * as wasm from "../../common-rs/pkg";
+ import * as wasm from "../../middle-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
  import CodeMirror from "./CodeMirror.svelte";
 
