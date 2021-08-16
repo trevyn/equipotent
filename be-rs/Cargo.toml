@@ -8,7 +8,7 @@ version = "0.1.0"
 [dependencies]
 anyhow = "1"
 bincode = "1"
-clap = "=3.0.0-beta.2"
+clap = "=3.0.0-beta.4"
 futures = "0.3"
 html-escape = "0.2"
 log = "0.4"

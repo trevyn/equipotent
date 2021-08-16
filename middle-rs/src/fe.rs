@@ -1,5 +1,6 @@
 use super::*;
 use std::cell::RefCell;
+#[allow(unused_imports)]
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
