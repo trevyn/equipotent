@@ -19,7 +19,9 @@
 
  async function dothings() {
   console.log(await wasm.Card.get(BigInt(2)));
-  console.log(await wasm.Card.set_question(BigInt(2), "myquestion"));
+ }
+ async function setquestion(t) {
+  await wasm.Card.set_question(BigInt(2), t);
  }
 
  setTimeout(() => dothings(), 1000);
@@ -38,7 +40,7 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <CodeMirror on:docChanged={(e) => console.log(e.detail)} />
+      <CodeMirror on:docChanged={(e) => setquestion(e.detail)} />
       <hr />
       <CodeMirror />
       <!-- svelte-ignore a11y-autofocus -->
