@@ -6,6 +6,7 @@ use log::{debug, error, info, trace, warn};
 use middle_rs::*;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
+use turbosql::select;
 use warp::ws::{Message, WebSocket};
 use warp::Filter;
 
@@ -45,8 +46,6 @@ async fn main() -> anyhow::Result<()> {
  info!("info enabled");
  debug!("debug enabled");
  trace!("trace enabled");
-
- // let routes = warp::any().map(|| Ok(warp::reply::html("hello"))).with(warp::log("routes"));
 
  // socket ----------------
  let routes = warp::path("socket")
@@ -119,7 +118,17 @@ async fn accept_connection(ws: WebSocket) {
   };
   if let Ok(t) = msg.to_str() {
    let command: Command = serde_json::from_str(t).unwrap();
-   dbg!(command);
+   match command {
+    Command::GetCard { rowid } => {
+     dbg!(rowid);
+     dbg!(select!(Card "WHERE rowid = ?", rowid));
+     ()
+    }
+    c => {
+     dbg!(c);
+     ()
+    }
+   }
   //  match command {
   //   Command { command: CommandType::SearchScrape, param: query } => {
   //    info!("SearchScrape: {:?} start", query);

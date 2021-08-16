@@ -38,6 +38,7 @@ pub enum Command {
  SearchInstant { query: String },
  OpenAi { query: String },
  GetCard { rowid: i64 },
+ SetCardQuestion { rowid: i64, question: String },
 }
 
 #[wasm_bindgen(getter_with_clone)]

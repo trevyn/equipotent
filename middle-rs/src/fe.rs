@@ -42,6 +42,20 @@ impl Card {
 
   Card { rowid: Some(rowid), question: Some("imaq".to_string()), answer: Some("imaa".to_string()) }
  }
+ pub async fn set_question(rowid: i64, question: String) {
+  console_log!("called set_question: {}, {}", rowid, question);
+
+  WS.with(|ws| {
+   if let Some(ws) = ws.borrow().as_ref() {
+    if let Err(e) = ws
+     .send_with_str(&serde_json::to_string(&Command::SetCardQuestion { rowid, question }).unwrap())
+    {
+     console_log!("websocket send err: {:?}", e);
+    }
+   }
+  });
+ }
+
  // pub fn save(&self) {}
  // pub fn delete(rowid: i64) {
  //  let _ = rowid;

@@ -17,12 +17,12 @@
   items = JSON.parse(json);
  };
 
- async function doget() {
-  const result = await wasm.Card.get(BigInt(2));
-  console.log(result);
+ async function dothings() {
+  console.log(await wasm.Card.get(BigInt(2)));
+  console.log(await wasm.Card.set_question(BigInt(2), "myquestion"));
  }
 
- setTimeout(() => doget(), 1000);
+ setTimeout(() => dothings(), 1000);
 
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
