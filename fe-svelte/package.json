@@ -1,7 +1,7 @@
 {
  "scripts": {
   "start": "snowpack dev",
-  "build": "wasm-pack build ../middle-rs --target web && rm -rf ../middle-rs/pkg && ! snowpack build && snowpack build",
+  "build": "wasm-pack build ../middle-rs --target web && sleep 1 && rm -rf ../middle-rs/pkg && echo sleep1 && sleep 3 && ! snowpack build && echo sleep2 && sleep 3 && snowpack build",
   "svelte-check": "svelte-check",
   "reinstall-deps": "rm -rf node_modules && rm -rf package-lock.json && npm install"
  },
