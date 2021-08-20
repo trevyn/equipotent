@@ -6,7 +6,7 @@ use log::{debug, error, info, trace, warn};
 use middle_rs::*;
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
-use turbosql::select;
+use turbosql::{execute, select};
 use warp::ws::{Message, WebSocket};
 use warp::Filter;
 
@@ -121,12 +121,16 @@ async fn accept_connection(ws: WebSocket) {
    match command {
     Command::GetCard { rowid } => {
      dbg!(rowid);
-     dbg!(select!(Card "WHERE rowid = ?", rowid));
-     ()
+     dbg!(select!(Card "WHERE rowid = ?", rowid)).ok();
+    }
+    Command::SetCardQuestion { rowid, question } => {
+     execute!("UPDATE card SET question = ? WHERE rowid = ?", question, rowid).unwrap();
+    }
+    Command::SetCardAnswer { rowid, answer } => {
+     execute!("UPDATE card SET answer = ? WHERE rowid = ?", answer, rowid).unwrap();
     }
     c => {
      dbg!(c);
-     ()
     }
    }
   //  match command {

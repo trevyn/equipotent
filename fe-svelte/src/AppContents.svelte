@@ -20,8 +20,11 @@
  async function dothings() {
   console.log(await wasm.Card.get(BigInt(2)));
  }
- async function setquestion(t) {
-  await wasm.Card.set_question(BigInt(2), t);
+ async function setcardquestion(t) {
+  await wasm.Card.set_card_question(BigInt(2), t);
+ }
+ async function setcardanswer(t) {
+  await wasm.Card.set_card_answer(BigInt(2), t);
  }
 
  setTimeout(() => dothings(), 1000);
@@ -40,9 +43,9 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <CodeMirror on:docChanged={(e) => setquestion(e.detail)} />
+      <CodeMirror on:docChanged={(e) => setcardquestion(e.detail)} />
       <hr />
-      <CodeMirror />
+      <CodeMirror on:docChanged={(e) => setcardanswer(e.detail)} />
       <!-- svelte-ignore a11y-autofocus -->
       <!-- <input
        class="p-5 text-5xl w-full"

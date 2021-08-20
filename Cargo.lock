@@ -1964,7 +1964,7 @@ dependencies = [
 [[package]]
 name = "turbosql"
 version = "0.2.0"
-source = "git+https://github.com/trevyn/turbosql?branch=main#5fad8f2183e5a9792b9bf8737cdc3c7fb977fc1a"
+source = "git+https://github.com/trevyn/turbosql?branch=main#ba720842114f75817f69c87c336f488757aa8869"
 dependencies = [
  "cfg-if 1.0.0",
  "directories-next",
@@ -1981,7 +1981,7 @@ dependencies = [
 [[package]]
 name = "turbosql-impl"
 version = "0.2.0"
-source = "git+https://github.com/trevyn/turbosql?branch=main#5fad8f2183e5a9792b9bf8737cdc3c7fb977fc1a"
+source = "git+https://github.com/trevyn/turbosql?branch=main#ba720842114f75817f69c87c336f488757aa8869"
 dependencies = [
  "fs2",
  "indoc",
