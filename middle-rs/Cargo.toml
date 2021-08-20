@@ -10,6 +10,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 console_error_panic_hook = "0.1"
+futures = "0.3"
 js-sys = "0.3"
 serde = {version = "1", features = ["derive"]}
 serde_json = "1"
@@ -25,3 +26,4 @@ web-sys = {version = "0.3", features = [
   "ProgressEvent",
   "WebSocket",
 ]}
+ws_stream_wasm = "0.7"

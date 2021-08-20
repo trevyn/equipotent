@@ -1,12 +1,21 @@
-#![allow(unused_imports)]
 use super::*;
-use std::cell::RefCell;
+use futures::StreamExt;
+use futures::{channel::mpsc::UnboundedSender, SinkExt};
+use std::{cell::RefCell, collections::HashMap};
+#[allow(unused_imports)]
 use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::{ErrorEvent, MessageEvent, WebSocket};
+use wasm_bindgen_futures::spawn_local;
+use ws_stream_wasm::WsMessage;
+
+#[derive(Default)]
+struct Globals {
+ channel_tx: Option<UnboundedSender<String>>,
+ next_txid: i64,
+ senders: HashMap<i64, UnboundedSender<Card>>,
+}
 
 thread_local! {
- static WS: RefCell<Option<WebSocket>> = RefCell::new(None);
+ static G: RefCell<Globals> = RefCell::new(Globals::default());
 }
 
 macro_rules! console_log {
@@ -19,27 +28,20 @@ extern "C" {
  fn log(s: &str);
 }
 
-#[wasm_bindgen(raw_module = "../../AppContents.svelte.js")]
-extern "C" {
- fn set_json(json: String);
-}
-
 #[wasm_bindgen]
 impl Card {
  // pub fn new() -> Card {
  //  Card { rowid: None, question: Some("q".to_string()), answer: Some("a".to_string()) }
  // }
  pub async fn get(rowid: i64) -> Card {
-  send_ws(Command::GetCard { rowid });
-
-  Card { rowid: Some(rowid), question: Some("imaq".to_string()), answer: Some("imaa".to_string()) }
+  send_ws(Command::GetCard { rowid }).await
  }
  pub async fn set_question(rowid: i64, question: String) {
   //execute!("UPDATE card SET question = ? WHERE rowid = ?", question, rowid).unwrap();
-  send_ws(Command::SetCardQuestion { rowid, question });
+  send_ws(Command::SetCardQuestion { rowid, question }).await;
  }
  pub async fn set_answer(rowid: i64, answer: String) {
-  send_ws(Command::SetCardAnswer { rowid, answer });
+  send_ws(Command::SetCardAnswer { rowid, answer }).await;
  }
  // pub fn save(&self) {}
  // pub fn delete(rowid: i64) {
@@ -50,81 +52,27 @@ impl Card {
  // }
 }
 
-fn send_ws(cmd: Command) {
- let wrapped_cmd = WrappedCommand { txid: 0, cmd };
- WS.with(|ws| {
-  if let Some(ws) = ws.borrow().as_ref() {
-   if let Err(e) = ws.send_with_str(&serde_json::to_string(&wrapped_cmd).unwrap()) {
-    console_log!("websocket send err: {:?}", e);
-   }
-  }
+async fn send_ws(cmd: Command) -> Card {
+ console_log!("send_ws: {:?}", cmd);
+
+ let (resp_tx, mut resp_rx) = futures::channel::mpsc::unbounded();
+
+ let (mut channel_tx, txid) = G.with(|g| -> (_, _) {
+  let mut g = g.borrow_mut();
+  let txid = g.next_txid;
+  g.senders.insert(txid, resp_tx);
+  g.next_txid += 1;
+  (g.channel_tx.clone().unwrap(), txid)
  });
-}
 
-fn init_ws(ws: &WebSocket) {
- // For small binary messages, Arraybuffer is more efficient than Blob
- ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
-
- // onmessage callback
- let cloned_ws = ws.clone();
- let onmessage_callback = Closure::wrap(Box::new(move |e: MessageEvent| {
-  if let Ok(abuf) = e.data().dyn_into::<js_sys::ArrayBuffer>() {
-   console_log!("message event, received arraybuffer: {:?}", abuf);
-   let array = js_sys::Uint8Array::new(&abuf);
-   let len = array.byte_length() as usize;
-   console_log!("Arraybuffer received {}bytes: {:?}", len, array.to_vec());
-   cloned_ws.set_binary_type(web_sys::BinaryType::Blob);
-   match cloned_ws.send_with_u8_array(&[5, 6, 7, 8]) {
-    Ok(_) => console_log!("binary message successfully sent"),
-    Err(err) => console_log!("error sending message: {:?}", err),
-   }
-  } else if let Ok(blob) = e.data().dyn_into::<web_sys::Blob>() {
-   console_log!("message event, received blob: {:?}", blob);
-   // better alternative to juggling with FileReader is to use https://crates.io/crates/gloo-file
-   let fr = web_sys::FileReader::new().unwrap();
-   let fr_c = fr.clone();
-   let onloadend_cb = Closure::wrap(Box::new(move |_e: web_sys::ProgressEvent| {
-    let array = js_sys::Uint8Array::new(&fr_c.result().unwrap());
-    let len = array.byte_length() as usize;
-    console_log!("Blob received {} bytes: {:?}", len, array.to_vec());
-    // here you can for example use the received image/png data
-   }) as Box<dyn FnMut(web_sys::ProgressEvent)>);
-   fr.set_onloadend(Some(onloadend_cb.as_ref().unchecked_ref()));
-   fr.read_as_array_buffer(&blob).expect("blob not readable");
-   onloadend_cb.forget();
-  } else if let Ok(txt) = e.data().dyn_into::<js_sys::JsString>() {
-   // console_log!("message event, received Text: {:?}", txt);
-   let json: String = txt.into();
-   // let items: Vec<ResultItem> = serde_json::from_str(&json).unwrap();
-   // console_log!("{:?}", items);
-   set_json(json);
-  } else {
-   console_log!("message event, received Unknown: {:?}", e.data());
-  }
- }) as Box<dyn FnMut(MessageEvent)>);
- ws.set_onmessage(Some(onmessage_callback.as_ref().unchecked_ref()));
- onmessage_callback.forget();
-
- // onerror callback
- let onerror_callback = Closure::wrap(Box::new(move |e: ErrorEvent| {
-  console_log!("error event: {:?}", e);
- }) as Box<dyn FnMut(ErrorEvent)>);
- ws.set_onerror(Some(onerror_callback.as_ref().unchecked_ref()));
- onerror_callback.forget();
-
- // onopen callback
- // let cloned_ws = ws.clone();
- let onopen_callback = Closure::wrap(Box::new(move |_| {
-  console_log!("socket opened");
-  // cloned_ws.send_with_u8_array(&vec![0, 1, 2, 3]).unwrap();
- }) as Box<dyn FnMut(JsValue)>);
- ws.set_onopen(Some(onopen_callback.as_ref().unchecked_ref()));
- onopen_callback.forget();
+ let wrapped_cmd = WrappedCommand { txid, cmd };
+ channel_tx.send(serde_json::to_string(&wrapped_cmd).unwrap()).await.unwrap();
+ resp_rx.next().await.unwrap()
 }
 
 #[allow(dead_code)]
 #[wasm_bindgen(start)]
-pub fn start() -> Result<(), JsValue> {
+pub async fn start() -> Result<(), JsValue> {
  console_error_panic_hook::set_once();
 
  turbosql::set_db_path(std::path::Path::new(":memory:")).unwrap();
@@ -134,11 +82,36 @@ pub fn start() -> Result<(), JsValue> {
  );
  console_log!("select: {:?}", turbosql::select!(Vec<ResultItem>));
 
- let new_ws = WebSocket::new("ws://127.0.0.1:8080/socket")?;
+ console_log!("connecting");
 
- WS.with(|ws| {
-  init_ws(&new_ws);
-  ws.replace(Some(new_ws));
+ let (_ws, wsio) =
+  ws_stream_wasm::WsMeta::connect("ws://127.0.0.1:8080/socket", None).await.unwrap();
+
+ console_log!("connected");
+
+ let (mut ws_tx, mut ws_rx) = wsio.split();
+ let (channel_tx, mut channel_rx) = futures::channel::mpsc::unbounded();
+
+ G.with(|g| {
+  g.borrow_mut().channel_tx = Some(channel_tx);
+ });
+
+ spawn_local(async move {
+  while let Some(msg) = ws_rx.next().await {
+   if let WsMessage::Text(msg) = msg {
+    let Response { txid, resp } = serde_json::from_str(&msg).unwrap();
+    let mut sender = G.with(|g| -> _ { g.borrow().senders.get(&txid).unwrap().clone() });
+    sender.send(resp).await.unwrap();
+   }
+  }
+  console_log!("ws_rx ENDED");
+ });
+
+ spawn_local(async move {
+  while let Some(msg) = channel_rx.next().await {
+   ws_tx.send(WsMessage::Text(msg)).await.unwrap();
+  }
+  console_log!("rx ENDED");
  });
 
  Ok(())

@@ -4,7 +4,6 @@ use clap::Clap;
 use futures::{SinkExt, StreamExt, TryFutureExt};
 use log::{debug, error, info, trace, warn};
 use middle_rs::*;
-use tokio::sync::mpsc;
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use turbosql::{execute, select};
 use warp::ws::{Message, WebSocket};
@@ -94,7 +93,7 @@ async fn main() -> anyhow::Result<()> {
 
 async fn accept_connection(ws: WebSocket) {
  let (mut ws_tx, mut ws_rx) = ws.split();
- let (tx, rx) = mpsc::unbounded_channel();
+ let (tx, rx) = tokio::sync::mpsc::unbounded_channel();
  let mut rx = UnboundedReceiverStream::new(rx);
 
  tokio::task::spawn(async move {
@@ -117,10 +116,12 @@ async fn accept_connection(ws: WebSocket) {
    }
   };
   if let Ok(t) = msg.to_str() {
-   let wrapped_cmd: WrappedCommand = serde_json::from_str(t).unwrap();
-   match wrapped_cmd.cmd {
+   let WrappedCommand { txid, cmd } = serde_json::from_str(t).unwrap();
+   match cmd {
     Command::GetCard { rowid } => {
-     dbg!(rowid, select!(Card "WHERE rowid = ?", rowid).ok());
+     let card = select!(Card "WHERE rowid = ?", rowid).unwrap();
+     let resp = Response { txid, resp: card };
+     tx.send(Message::text(serde_json::to_string(&resp).unwrap())).unwrap();
     }
     Command::SetCardQuestion { rowid, question } => {
      execute!("UPDATE card SET question = ? WHERE rowid = ?", question, rowid).unwrap();

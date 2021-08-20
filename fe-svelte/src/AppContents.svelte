@@ -1,9 +1,5 @@
 <script context="module">
  import * as wasm from "../../middle-rs/pkg";
- let set_items;
- export function set_json(json) {
-  set_items(json);
- }
 </script>
 
 <script lang="ts">
@@ -13,12 +9,10 @@
  let items = [];
  let query = "";
 
- set_items = (json) => {
-  items = JSON.parse(json);
- };
-
  setTimeout(async () => {
-  console.log(await wasm.Card.get(BigInt(2)));
+  let card = await wasm.Card.get(2n);
+  console.log("question: ", card.question);
+  console.log("answer: ", card.answer);
  }, 1000);
 
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));

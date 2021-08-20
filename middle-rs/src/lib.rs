@@ -38,6 +38,12 @@ pub struct WrappedCommand {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct Response {
+ pub txid: i64,
+ pub resp: Card,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum Command {
  // SearchScrape { query: String },
  // SearchInstant { query: String },
