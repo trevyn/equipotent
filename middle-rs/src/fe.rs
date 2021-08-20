@@ -1,6 +1,5 @@
 use super::*;
-use futures::StreamExt;
-use futures::{channel::mpsc::UnboundedSender, SinkExt};
+use futures::{channel::mpsc::UnboundedSender, SinkExt, StreamExt};
 use std::{cell::RefCell, collections::HashMap};
 #[allow(unused_imports)]
 use wasm_bindgen::prelude::*;
@@ -82,6 +81,12 @@ pub async fn start() -> Result<(), JsValue> {
  );
  console_log!("select: {:?}", turbosql::select!(Vec<ResultItem>));
 
+ let (channel_tx, mut channel_rx) = futures::channel::mpsc::unbounded();
+
+ G.with(|g| {
+  g.borrow_mut().channel_tx = Some(channel_tx);
+ });
+
  console_log!("connecting");
 
  let (_ws, wsio) =
@@ -90,11 +95,6 @@ pub async fn start() -> Result<(), JsValue> {
  console_log!("connected");
 
  let (mut ws_tx, mut ws_rx) = wsio.split();
- let (channel_tx, mut channel_rx) = futures::channel::mpsc::unbounded();
-
- G.with(|g| {
-  g.borrow_mut().channel_tx = Some(channel_tx);
- });
 
  spawn_local(async move {
   while let Some(msg) = ws_rx.next().await {

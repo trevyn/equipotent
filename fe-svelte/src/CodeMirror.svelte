@@ -5,12 +5,15 @@
 
  const dispatch = createEventDispatcher();
 
+ export let doc;
+
  let node;
- let view;
+ let view: EditorView;
 
  onMount(async () => {
   view = new EditorView({
    state: EditorState.create({
+    doc,
     extensions: [
      basicSetup,
      oneDark,

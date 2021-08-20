@@ -9,12 +9,6 @@
  let items = [];
  let query = "";
 
- setTimeout(async () => {
-  let card = await wasm.Card.get(2n);
-  console.log("question: ", card.question);
-  console.log("answer: ", card.answer);
- }, 1000);
-
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
 
@@ -29,9 +23,17 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <CodeMirror on:docChanged={(e) => wasm.Card.set_question(2n, e.detail)} />
-      <hr />
-      <CodeMirror on:docChanged={(e) => wasm.Card.set_answer(2n, e.detail)} />
+      {#await wasm.Card.get(2n) then card}
+       <CodeMirror
+        doc={card.question}
+        on:docChanged={(e) => wasm.Card.set_question(2n, e.detail)}
+       />
+       <hr />
+       <CodeMirror
+        doc={card.answer}
+        on:docChanged={(e) => wasm.Card.set_answer(2n, e.detail)}
+       />
+      {/await}
       <!-- svelte-ignore a11y-autofocus -->
       <!-- <input
        class="p-5 text-5xl w-full"
@@ -48,10 +50,10 @@
        }}
       /> -->
       <!-- <p> -->
-      {#each items as item (item)}
-       <!-- (item.rowid) -->
-       <ResultItem {item} />
-      {/each}
+      <!-- {#each items as item (item)} -->
+      <!-- (item.rowid) -->
+      <!-- <ResultItem {item} /> -->
+      <!-- {/each} -->
       <!-- </p> -->
      </div>
     </div>
