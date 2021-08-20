@@ -30,46 +30,17 @@ impl Card {
  //  Card { rowid: None, question: Some("q".to_string()), answer: Some("a".to_string()) }
  // }
  pub async fn get(rowid: i64) -> Card {
-  console_log!("called get:{}", rowid);
-
-  WS.with(|ws| {
-   if let Some(ws) = ws.borrow().as_ref() {
-    if let Err(e) = ws.send_with_str(&serde_json::to_string(&Command::GetCard { rowid }).unwrap()) {
-     console_log!("websocket send err: {:?}", e);
-    }
-   }
-  });
+  send_ws(Command::GetCard { rowid });
 
   Card { rowid: Some(rowid), question: Some("imaq".to_string()), answer: Some("imaa".to_string()) }
  }
- pub async fn set_card_question(rowid: i64, question: String) {
-  console_log!("called set_card_question: {}, {}", rowid, question);
-
-  WS.with(|ws| {
-   if let Some(ws) = ws.borrow().as_ref() {
-    if let Err(e) = ws
-     .send_with_str(&serde_json::to_string(&Command::SetCardQuestion { rowid, question }).unwrap())
-    {
-     console_log!("websocket send err: {:?}", e);
-    }
-   }
-  });
+ pub async fn set_question(rowid: i64, question: String) {
+  //execute!("UPDATE card SET question = ? WHERE rowid = ?", question, rowid).unwrap();
+  send_ws(Command::SetCardQuestion { rowid, question });
  }
- pub async fn set_card_answer(rowid: i64, answer: String) {
-  console_log!("called set_card_answer: {}, {}", rowid, answer);
-
-  WS.with(|ws| {
-   if let Some(ws) = ws.borrow().as_ref() {
-    if let Err(e) = ws
-     .send_with_str(&serde_json::to_string(&Command::SetCardAnswer { rowid, answer }).unwrap())
-    {
-     console_log!("websocket send err: {:?}", e);
-    }
-   }
-  });
+ pub async fn set_answer(rowid: i64, answer: String) {
+  send_ws(Command::SetCardAnswer { rowid, answer });
  }
-
-
  // pub fn save(&self) {}
  // pub fn delete(rowid: i64) {
  //  let _ = rowid;
@@ -77,6 +48,18 @@ impl Card {
  // pub fn list() -> Vec<i64> {
  //  Vec::new()
  // }
+}
+
+fn send_ws(cmd: Command) {
+ WS.with(|ws| {
+  if let Some(ws) = ws.borrow().as_ref() {
+   if let Err(e) = ws
+    .send_with_str(&serde_json::to_string(&cmd).unwrap())
+   {
+    console_log!("websocket send err: {:?}", e);
+   }
+  }
+ });
 }
 
 fn init_ws(ws: &WebSocket) {

@@ -1,4 +1,5 @@
 <script context="module">
+ import * as wasm from "../../middle-rs/pkg";
  let set_items;
  export function set_json(json) {
   set_items(json);
@@ -6,7 +7,6 @@
 </script>
 
 <script lang="ts">
- import * as wasm from "../../middle-rs/pkg";
  import ResultItem from "./ResultItem.svelte";
  import CodeMirror from "./CodeMirror.svelte";
 
@@ -17,17 +17,9 @@
   items = JSON.parse(json);
  };
 
- async function dothings() {
+ setTimeout(async () => {
   console.log(await wasm.Card.get(BigInt(2)));
- }
- async function setcardquestion(t) {
-  await wasm.Card.set_card_question(BigInt(2), t);
- }
- async function setcardanswer(t) {
-  await wasm.Card.set_card_answer(BigInt(2), t);
- }
-
- setTimeout(() => dothings(), 1000);
+ }, 1000);
 
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
@@ -43,9 +35,9 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
      >
-      <CodeMirror on:docChanged={(e) => setcardquestion(e.detail)} />
+      <CodeMirror on:docChanged={(e) => wasm.Card.set_question(2n, e.detail)} />
       <hr />
-      <CodeMirror on:docChanged={(e) => setcardanswer(e.detail)} />
+      <CodeMirror on:docChanged={(e) => wasm.Card.set_answer(2n, e.detail)} />
       <!-- svelte-ignore a11y-autofocus -->
       <!-- <input
        class="p-5 text-5xl w-full"

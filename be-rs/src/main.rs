@@ -129,9 +129,6 @@ async fn accept_connection(ws: WebSocket) {
     Command::SetCardAnswer { rowid, answer } => {
      execute!("UPDATE card SET answer = ? WHERE rowid = ?", answer, rowid).unwrap();
     }
-    c => {
-     dbg!(c);
-    }
    }
   //  match command {
   //   Command { command: CommandType::SearchScrape, param: query } => {

@@ -34,9 +34,9 @@ pub struct SearchQueryResultItem {
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum Command {
- SearchScrape { query: String },
- SearchInstant { query: String },
- OpenAi { query: String },
+ // SearchScrape { query: String },
+ // SearchInstant { query: String },
+ // OpenAi { query: String },
  GetCard { rowid: i64 },
  SetCardQuestion { rowid: i64, question: String },
  SetCardAnswer { rowid: i64, answer: String },
