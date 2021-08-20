@@ -117,11 +117,10 @@ async fn accept_connection(ws: WebSocket) {
    }
   };
   if let Ok(t) = msg.to_str() {
-   let command: Command = serde_json::from_str(t).unwrap();
-   match command {
+   let wrapped_cmd: WrappedCommand = serde_json::from_str(t).unwrap();
+   match wrapped_cmd.cmd {
     Command::GetCard { rowid } => {
-     dbg!(rowid);
-     dbg!(select!(Card "WHERE rowid = ?", rowid)).ok();
+     dbg!(rowid, select!(Card "WHERE rowid = ?", rowid).ok());
     }
     Command::SetCardQuestion { rowid, question } => {
      execute!("UPDATE card SET question = ? WHERE rowid = ?", question, rowid).unwrap();

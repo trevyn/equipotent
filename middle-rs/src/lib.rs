@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use turbosql::Turbosql;
 use wasm_bindgen::prelude::*;
 
-#[cfg(target_arch = "wasm32")]
 mod fe;
 
 #[wasm_bindgen(getter_with_clone)]
@@ -30,6 +29,12 @@ pub struct SearchQueryResultItem {
  pub bookmarked: bool,
  pub hostaffection: i32,
  pub rank: f64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct WrappedCommand {
+ pub txid: i64,
+ pub cmd: Command,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
