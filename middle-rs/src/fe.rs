@@ -1,13 +1,11 @@
-#![allow(unused_imports, unused_macros)]
+#![allow(unused_imports)]
 use super::*;
 use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-#[cfg(target_arch = "wasm32")]
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
 
 thread_local! {
- #[cfg(target_arch = "wasm32")]
  static WS: RefCell<Option<WebSocket>> = RefCell::new(None);
 }
 
@@ -26,7 +24,6 @@ extern "C" {
  fn set_json(json: String);
 }
 
-#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 impl Card {
  // pub fn new() -> Card {
@@ -53,7 +50,6 @@ impl Card {
  // }
 }
 
-#[cfg(target_arch = "wasm32")]
 fn send_ws(cmd: Command) {
  let wrapped_cmd = WrappedCommand { txid: 0, cmd };
  WS.with(|ws| {
@@ -65,7 +61,6 @@ fn send_ws(cmd: Command) {
  });
 }
 
-#[cfg(target_arch = "wasm32")]
 fn init_ws(ws: &WebSocket) {
  // For small binary messages, Arraybuffer is more efficient than Blob
  ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
@@ -127,7 +122,7 @@ fn init_ws(ws: &WebSocket) {
  onopen_callback.forget();
 }
 
-#[cfg(target_arch = "wasm32")]
+#[allow(dead_code)]
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
  console_error_panic_hook::set_once();
