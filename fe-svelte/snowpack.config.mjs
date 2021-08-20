@@ -10,10 +10,9 @@ export default {
   "@snowpack/plugin-svelte",
   "@snowpack/plugin-postcss",
   [
-   "snowpack-plugin-wasm-pack",
+   "@emily-curry/snowpack-plugin-wasm-pack",
    {
     projectPath: "../middle-rs",
-    // profile: "release",
    },
   ],
  ],
