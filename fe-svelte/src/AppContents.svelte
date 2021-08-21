@@ -8,6 +8,7 @@
 
  let items = [];
  let query = "";
+ let cardnum = 2n;
 
  // $: if (query.slice(-1) == " ") wasm.set_search(query.slice(0, -1));
 </script>
@@ -21,17 +22,20 @@
    <div class="mx-auto">
     <div class="divide-y divide-gray-200">
      <div
-      class="text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
+      class="text-base leading-6 space-y-4 text-gray-300 sm:text-lg sm:leading-7"
      >
-      {#await wasm.Card.get(2n) then card}
+      <div>card {cardnum}</div>
+      <button class="text-6xl p-10 border" on:click={() => cardnum--}>-</button>
+      <button class="text-6xl p-10 border" on:click={() => cardnum++}>+</button>
+      {#await wasm.Card.get(cardnum) then card}
        <CodeMirror
         doc={card.question}
-        on:docChanged={(e) => wasm.Card.set_question(2n, e.detail)}
+        on:docChanged={(e) => wasm.Card.set_question(cardnum, e.detail)}
        />
        <hr />
        <CodeMirror
         doc={card.answer}
-        on:docChanged={(e) => wasm.Card.set_answer(2n, e.detail)}
+        on:docChanged={(e) => wasm.Card.set_answer(cardnum, e.detail)}
        />
       {/await}
       <!-- svelte-ignore a11y-autofocus -->
