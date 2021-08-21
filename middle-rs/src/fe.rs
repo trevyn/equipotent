@@ -8,7 +8,7 @@ use ws_stream_wasm::WsMessage;
 
 #[derive(Default)]
 struct Globals {
- channel_tx: Option<UnboundedSender<String>>,
+ channel_tx: Option<UnboundedSender<Vec<u8>>>,
  next_txid: i64,
  senders: HashMap<i64, UnboundedSender<Card>>,
 }
@@ -65,7 +65,7 @@ async fn send_ws(cmd: Command) -> Card {
  });
 
  let wrapped_cmd = WrappedCommand { txid, cmd };
- channel_tx.send(serde_json::to_string(&wrapped_cmd).unwrap()).await.unwrap();
+ channel_tx.send(bincode::serialize(&wrapped_cmd).unwrap()).await.unwrap();
  resp_rx.next().await.unwrap()
 }
 
@@ -98,8 +98,8 @@ pub async fn start() -> Result<(), JsValue> {
 
  spawn_local(async move {
   while let Some(msg) = ws_rx.next().await {
-   if let WsMessage::Text(msg) = msg {
-    let Response { txid, resp } = serde_json::from_str(&msg).unwrap();
+   if let WsMessage::Binary(msg) = msg {
+    let Response { txid, resp } = bincode::deserialize(&msg).unwrap();
     let mut sender = G.with(|g| -> _ { g.borrow().senders.get(&txid).unwrap().clone() });
     sender.send(resp).await.unwrap();
    }
@@ -109,7 +109,7 @@ pub async fn start() -> Result<(), JsValue> {
 
  spawn_local(async move {
   while let Some(msg) = channel_rx.next().await {
-   ws_tx.send(WsMessage::Text(msg)).await.unwrap();
+   ws_tx.send(WsMessage::Binary(msg)).await.unwrap();
   }
   console_log!("rx ENDED");
  });

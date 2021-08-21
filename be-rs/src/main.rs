@@ -115,35 +115,34 @@ async fn accept_connection(ws: WebSocket) {
     break;
    }
   };
-  if let Ok(t) = msg.to_str() {
-   let WrappedCommand { txid, cmd } = serde_json::from_str(t).unwrap();
-   info!("txid {}: {:?}", txid, cmd);
-   match cmd {
-    Command::GetCard { rowid } => {
-     let card = match select!(Option<Card> "WHERE rowid = ?", rowid).unwrap() {
-      Some(card) => card,
-      None => Card { rowid: Some(rowid), ..Default::default() },
-     };
-     let resp = Response { txid, resp: card };
-     tx.send(Message::text(serde_json::to_string(&resp).unwrap())).unwrap();
-    }
-    Command::SetCardQuestion { rowid, question } => {
-     execute!(
+  let WrappedCommand { txid, cmd } = bincode::deserialize(msg.as_bytes()).unwrap();
+  info!("txid {}: {:?}", txid, cmd);
+  match cmd {
+   Command::GetCard { rowid } => {
+    let card = match select!(Option<Card> "WHERE rowid = ?", rowid).unwrap() {
+     Some(card) => card,
+     None => Card { rowid: Some(rowid), ..Default::default() },
+    };
+    let resp = Response { txid, resp: card };
+    tx.send(Message::binary(bincode::serialize(&resp).unwrap())).unwrap();
+   }
+   Command::SetCardQuestion { rowid, question } => {
+    execute!(
       "INSERT INTO card(rowid, question) VALUES(?, ?) ON CONFLICT DO UPDATE SET question = excluded.question",
       rowid,
       question
      )
      .unwrap();
-    }
-    Command::SetCardAnswer { rowid, answer } => {
-     execute!(
+   }
+   Command::SetCardAnswer { rowid, answer } => {
+    execute!(
       "INSERT INTO card(rowid, answer) VALUES(?, ?) ON CONFLICT DO UPDATE SET answer = excluded.answer",
       rowid,
       answer
      )
      .unwrap();
-    }
    }
+  }
   //  match command {
   //   Command { command: CommandType::SearchScrape, param: query } => {
   //    info!("SearchScrape: {:?} start", query);
@@ -166,9 +165,6 @@ async fn accept_connection(ws: WebSocket) {
   //    // tx.send(Message::text(serde_json::to_string(&search_results).unwrap())).unwrap();
   //   }
   //  }
-  } else {
-   error!("received non-text message: {:?}", msg);
-  };
  }
 
  info!("accept_connection completed")
