@@ -6,20 +6,20 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # checklinks:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
+  checklinks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - uses: lycheeverse/lychee-action@v1
-  #       id: lychee
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         args: --verbose --no-progress --headers="accept=text/html"
+      - uses: lycheeverse/lychee-action@v1
+        id: lychee
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: --verbose --no-progress --headers="accept=text/html"
 
-  #     - name: Fail if there were link-check errors
-  #       run: exit ${{ steps.lychee.outputs.exit_code }}
+      - name: Fail if there were link-check errors
+        run: exit ${{ steps.lychee.outputs.exit_code }}
 
   build:
     name: build ${{ matrix.os }} rust ${{ matrix.rust }}
@@ -58,7 +58,7 @@ jobs:
           path: target/release/be-rs
 
   release:
-    needs: build
+    needs: [checklinks, build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
