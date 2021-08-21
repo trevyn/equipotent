@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use super::*;
 use futures::{channel::mpsc::UnboundedSender, SinkExt, StreamExt};
 use std::{cell::RefCell, collections::HashMap};
@@ -51,6 +52,11 @@ impl Card {
  // }
 }
 
+#[wasm_bindgen]
+pub fn process_upload(buffer: &[u8]) {
+ console_log!("recvd: {}", buffer.len());
+}
+
 async fn send_ws(cmd: Command) -> Card {
  console_log!("send_ws: {:?}", cmd);
 
@@ -69,7 +75,6 @@ async fn send_ws(cmd: Command) -> Card {
  resp_rx.next().await.unwrap()
 }
 
-#[allow(dead_code)]
 #[wasm_bindgen(start)]
 pub async fn start() -> Result<(), JsValue> {
  console_error_panic_hook::set_once();
