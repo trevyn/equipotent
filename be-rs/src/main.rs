@@ -129,18 +129,16 @@ async fn accept_connection(ws: WebSocket) {
     }
     Command::SetCardQuestion { rowid, question } => {
      execute!(
-      "INSERT INTO card(rowid, question) VALUES(?, ?) ON CONFLICT DO UPDATE SET question = ?",
+      "INSERT INTO card(rowid, question) VALUES(?, ?) ON CONFLICT DO UPDATE SET question = excluded.question",
       rowid,
-      question,
       question
      )
      .unwrap();
     }
     Command::SetCardAnswer { rowid, answer } => {
      execute!(
-      "INSERT INTO card(rowid, answer) VALUES(?, ?) ON CONFLICT DO UPDATE SET answer = ?",
+      "INSERT INTO card(rowid, answer) VALUES(?, ?) ON CONFLICT DO UPDATE SET answer = excluded.answer",
       rowid,
-      answer,
       answer
      )
      .unwrap();
