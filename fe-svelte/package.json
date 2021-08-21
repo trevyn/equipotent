@@ -12,7 +12,7 @@
   "postcss": "^8.3.6",
   "snowpack": "^3.8.6",
   "@emily-curry/snowpack-plugin-wasm-pack": "^1.1.2",
-  "svelte": "^3.42.1",
+  "svelte": "^3.42.2",
   "svelte-check": "^2.2.4",
   "tailwindcss": "^2.2.7",
   "typescript": "^4.3.5"
