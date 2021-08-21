@@ -30,4 +30,4 @@
  });
 </script>
 
-<div class="text-5xl min-w-full max-w-full" bind:this={node} />
+<div class="text-xl min-w-full max-w-full" bind:this={node} />
