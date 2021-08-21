@@ -24,7 +24,7 @@
      <div
       class="text-base leading-6 space-y-4 text-gray-500 sm:text-lg sm:leading-7"
      >
-      <div>card {cardnum}</div>
+      <!-- <div>card {cardnum}</div>
       <button class="text-6xl p-10 border" on:click={() => cardnum--}>-</button>
       <button class="text-6xl p-10 border" on:click={() => cardnum++}>+</button>
       {#await wasm.Card.get(cardnum) then card}
@@ -37,7 +37,7 @@
         doc={card.answer}
         on:docChanged={(e) => wasm.Card.set_answer(cardnum, e.detail)}
        />
-      {/await}
+      {/await} -->
       <!-- svelte-ignore a11y-autofocus -->
       <!-- <input
        class="p-5 text-5xl w-full"
@@ -53,12 +53,20 @@
         }
        }}
       /> -->
-      <!-- <p> -->
-      <!-- {#each items as item (item)} -->
-      <!-- (item.rowid) -->
-      <!-- <ResultItem {item} /> -->
-      <!-- {/each} -->
-      <!-- </p> -->
+      {#each [...Array(20).keys()] as key}
+       <div class="text-5xl">card {key}</div>
+       {#await wasm.Card.get(BigInt(key)) then card}
+        <CodeMirror
+         doc={card.question}
+         on:docChanged={(e) => wasm.Card.set_question(BigInt(key), e.detail)}
+        />
+        <CodeMirror
+         doc={card.answer}
+         on:docChanged={(e) => wasm.Card.set_answer(BigInt(key), e.detail)}
+        />
+       {/await}
+       <hr />
+      {/each}
      </div>
     </div>
    </div>
